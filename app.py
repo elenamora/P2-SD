@@ -7,6 +7,9 @@ from models.event import EventModel, artists_table
 from models.account import AccountsModel, auth
 from models.order import OrdersModel
 from flask_cors import CORS
+from decouple import config as config_decouple
+from config import config
+from models.lock import lock
 
 
 from flask import render_template
@@ -15,10 +18,13 @@ app = Flask(__name__,
          static_folder="../frontend/dist/static",
          template_folder="../frontend/dist")
 CORS(app, resources={r'/*': {'origins': '*'}})
-app.config.from_object(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = secret_key
+
+environment = config['development']
+if config_decouple('PRODUCTION', cast=bool, default=False):
+    environment = config['production']
+
+app.config.from_object(environment)
+
 migrate = Migrate(app, db)
 db.init_app(app)
 api = Api(app)
@@ -286,30 +292,34 @@ class Orders(Resource):
             parser.add_argument('tickets_bought', type=int, required=True, help="This field cannot be left blanck")
             data = parser.parse_args()
 
-            user = AccountsModel.find_by_username(username)
-            money = user.available_money
+            with lock.lock:
+                user = AccountsModel.find_by_username(username)
+                money = user.available_money
 
-            event = EventModel.find_by_id(data['event_id'])
-            tickets = event.total_available_tickets
-            price = event.price
-            total = price * data['tickets_bought']
+                event = EventModel.find_by_id(data['event_id'])
+                tickets = event.total_available_tickets
+                price = event.price
+                total = price * data['tickets_bought']
 
-            if money >= total and tickets > 0:
                 event.total_available_tickets -= data['tickets_bought']
                 user.available_money -= total
                 new_order = OrdersModel(data['event_id'], data['tickets_bought'])
                 user.orders.append(new_order)
 
                 try:
-                    new_order.save_to_db()
-                    event.save_to_db()
-                    user.save_to_db()
-                    return new_order.json(), 200
+                    db.session.add(new_order)
+                    db.session.add(event)
+                    db.session.add(user)
+                    money = user.available_money
+                    tickets = event.total_available_tickets
+                    if money >= 0 and tickets >= 0:
+                        db.session.commit()
+                        return new_order.json(), 200
+                    else:
+                        db.session.rollback()
+                        return {"message": "Not enough money/ not available tickets"}, 400
                 except:
                     return {"message": "Database Error"}, 500
-
-            else:
-                return {"message": "Not enough money/ not available tickets"}, 400
         else:
             return {"message": "User match not found"}, 400
 

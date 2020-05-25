@@ -1,7 +1,6 @@
 from db import db
 from models.event import EventModel
 
-
 class OrdersModel(db.Model):
     __tablename__ = 'orders'
 
