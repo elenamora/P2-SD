@@ -1,6 +1,6 @@
 from flask import Flask, g
 from flask_restful import Resource, Api, reqparse
-from db import db, secret_key
+from db import db
 from flask_migrate import Migrate
 from models.artist import ArtistModel
 from models.event import EventModel, artists_table
