@@ -11,7 +11,6 @@ from decouple import config as config_decouple
 from config import config
 from models.lock import lock
 
-
 from flask import render_template
 
 app = Flask(__name__, static_folder="frontend/dist/static",
@@ -41,9 +40,9 @@ class Artist(Resource):
     def post(self):
         parser = reqparse.RequestParser()
 
-        parser.add_argument('name', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('country', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('genre', type=str, required=True, help="This field cannot be left blanck" )
+        parser.add_argument('name', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('country', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('genre', type=str, required=True, help="This field cannot be left blank" )
         data = parser.parse_args()
 
         new_artist = ArtistModel(data['name'], data['country'], data['genre'])
