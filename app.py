@@ -15,8 +15,8 @@ from models.lock import lock
 from flask import render_template
 
 app = Flask(__name__,
-         static_folder="../frontend/dist/static",
-         template_folder="../frontend/dist")
+         static_folder="/frontend/dist/static",
+         template_folder="/frontend/dist")
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 environment = config['development']
