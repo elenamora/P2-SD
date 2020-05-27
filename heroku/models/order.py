@@ -1,5 +1,5 @@
-from heroku.db import db
-from heroku.models.event import EventModel
+from db import db
+from models.event import EventModel
 
 class OrdersModel(db.Model):
     __tablename__ = 'orders'

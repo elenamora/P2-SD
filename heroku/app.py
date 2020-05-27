@@ -1,15 +1,15 @@
 from flask import Flask, g
 from flask_restful import Resource, Api, reqparse
-from heroku.db import db
+from db import db
 from flask_migrate import Migrate
-from heroku.models.artist import ArtistModel
-from heroku.models.event import EventModel, artists_table
-from heroku.models.account import AccountsModel, auth
-from heroku.models.order import OrdersModel
+from models.artist import ArtistModel
+from models.event import EventModel, artists_table
+from models.account import AccountsModel, auth
+from models.order import OrdersModel
 from flask_cors import CORS
 from decouple import config as config_decouple
-from heroku.config import config
-from heroku.models.lock import lock
+from config import config
+from models.lock import lock
 
 from flask import render_template
 
