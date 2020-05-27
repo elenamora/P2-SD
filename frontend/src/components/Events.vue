@@ -12,7 +12,7 @@
         <div class="col-lg-4 col-md-6 mb-4" v-for="(event) in events" :key="event.id">
           <br>
           <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="../assets/logo.png" alt="Card image cap">
+            <img class="card-img-top" src="" alt="Card image cap">
             <div class="card-body">
               <h6>{{ event.name }}</h6>
               <div v-for="(artist) in event.artists" :key="artist.id">
