@@ -138,7 +138,7 @@ export default {
       }
     },
     getEvents () {
-      const path = 'https://grupa7sd-eventright.herokuapp.com/events'
+      const path = 'https://grupa7test-eventright.herokuapp.com/events'
       axios.get(path)
         .then((res) => {
           this.events = res.data.events
@@ -156,7 +156,7 @@ export default {
       document.getElementById('cards').style.display = 'block'
     },
     addPurchase (parameters) {
-      const path = 'https://grupa7sd-eventright.herokuapp.com/order/' + this.username
+      const path = 'https://grupa7test-eventright.herokuapp.com/order/' + this.username
       axios.post(path, parameters, {
         auth: {username: this.token}
       })
@@ -181,7 +181,7 @@ export default {
       this.getEvents()
     },
     getUser () {
-      const path1 = 'https://grupa7sd-eventright.herokuapp.com/account/' + this.username
+      const path1 = 'https://grupa7test-eventright.herokuapp.com/account/' + this.username
       axios.get(path1, {
         auth: {username: this.token}
       })
@@ -194,7 +194,7 @@ export default {
         })
     },
     getOrders () {
-      const path = 'https://grupa7sd-eventright.herokuapp.com/order/' + this.username
+      const path = 'https://grupa7test-eventright.herokuapp.com/order/' + this.username
       axios.get(path, {
         auth: {username: this.token}
       })

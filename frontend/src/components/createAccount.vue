@@ -66,7 +66,7 @@ export default {
       })
     },
     createAccount () {
-      const path = 'https://grupa7sd-eventright.herokuapp.com/account'
+      const path = 'https://grupa7test-eventright.herokuapp.com/account'
       axios.post(path, this.addUserForm)
         .then(() => {
           console.log('Account Created')

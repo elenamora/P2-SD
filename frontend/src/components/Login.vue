@@ -43,7 +43,7 @@ export default {
         username: this.username,
         password: this.password
       }
-      const path = 'https://grupa7sd-eventright.herokuapp.com/login'
+      const path = 'https://grupa7test-eventright.herokuapp.com/login'
       axios.post(path, parameters)
         .then((res) => {
           this.logged = true
@@ -61,7 +61,7 @@ export default {
         })
     },
     getAccount () {
-      const path = 'https://grupa7sd-eventright.herokuapp.com/account/' + this.username
+      const path = 'https://grupa7test-eventright.herokuapp.com/account/' + this.username
       axios.get(path)
         .then((res) => {
           this.is_admin = res.data.user.is_admin
