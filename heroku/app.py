@@ -1,20 +1,20 @@
 from flask import Flask, g
 from flask_restful import Resource, Api, reqparse
-from db import db
+from heroku.db import db
 from flask_migrate import Migrate
-from models.artist import ArtistModel
-from models.event import EventModel, artists_table
-from models.account import AccountsModel, auth
-from models.order import OrdersModel
+from heroku.models.artist import ArtistModel
+from heroku.models.event import EventModel, artists_table
+from heroku.models.account import AccountsModel, auth
+from heroku.models.order import OrdersModel
 from flask_cors import CORS
 from decouple import config as config_decouple
-from config import config
-from models.lock import lock
+from heroku.config import config
+from heroku.models.lock import lock
 
 from flask import render_template
 
-app = Flask(__name__, static_folder="frontend/dist/static",
-          template_folder="frontend/dist")
+app = Flask(__name__, static_folder="../frontend/dist/static",
+          template_folder="../frontend/dist")
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 environment = config['development']

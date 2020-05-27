@@ -1,4 +1,4 @@
-from db import db
+from heroku.db import db
 
 artists_table = db.Table('event_artist', db.Column('event_id', db.Integer, db.ForeignKey('events.id')),
                    db.Column('artist_id', db.Integer, db.ForeignKey('artists.id')))

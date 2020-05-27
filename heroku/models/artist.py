@@ -1,4 +1,4 @@
-from db import db
+from heroku.db import db
 
 genres = ('REGGAE', 'POP', 'TRAP', 'HIP HOP', 'ROCK', 'INDIE', 'HEAVY', 'ELECTRONIC', 'OTHER')
 
