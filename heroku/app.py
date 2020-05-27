@@ -20,9 +20,6 @@ app = Flask(__name__, static_folder="../frontend/dist/static",
           template_folder="../frontend/dist")
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.ERROR)
-
 environment = config['development']
 if config_decouple('PRODUCTION', cast=bool, default=False):
     environment = config['production']
