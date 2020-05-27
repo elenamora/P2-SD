@@ -6,6 +6,8 @@
     <h4> Total tickets bought: {{ tickets_bought }} </h4>
     <h4> Money available: {{ money }} </h4>
 
+    <button id="login" class="btn btn-success btn-lg" @click="login"> Login </button>
+
     <div class="container" id='cards'>
       <button id="events_cart" class="btn btn-success btn-lg" @click="showEventsCart">See Cart</button>
       <div class="row">
@@ -213,6 +215,9 @@ export default {
     getInfo () {
       this.getUser()
       this.getOrders()
+    },
+    login () {
+      this.$router.replace({ path: '/userlogin' })
     }
   },
   created () {
