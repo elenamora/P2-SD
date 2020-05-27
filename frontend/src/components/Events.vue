@@ -38,8 +38,8 @@
     <p id='demo'></p>
     <p id='demo2'></p>
 
-    <p id='info1'></p>
-    <p id='info2'></p>
+    <p id='info1'> </p>
+    <p id='info2'>Total tickets bought</p>
 
     <div class="container" id="cart" disabled>
           <table class="table">
@@ -189,7 +189,7 @@ export default {
       })
         .then((res) => {
           this.user = res.data.user
-          document.getElementById('info1').innerHTML = res.data.user.available_money
+          document.getElementById('info1').innerHTML = 'Money available: ' + res.data.user.available_money
         })
         .catch((error) => {
           console.error(error)
@@ -210,7 +210,7 @@ export default {
       for (let i = 0; i < this.orders.length; i += 1) {
         this.total_tickets_bought += this.orders[i].tickets_bought
       }
-      document.getElementById('info2').innerHTML = this.total_tickets_bought
+      document.getElementById('info2').innerHTML = 'Total tickets bought: ' + this.total_tickets_bought
     },
     getInfo () {
       this.getUser()
