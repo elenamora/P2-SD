@@ -8,6 +8,9 @@
 
     <button id="login" class="btn btn-success btn-lg" @click="login"> Login </button>
 
+    <button id="create" class="btn btn-success btn-lg" @click="create"> Create new Event </button>
+    <button id="update" class="btn btn-success btn-lg" @click="update"> Update Event </button>
+
     <div class="container" id='cards'>
       <button id="events_cart" class="btn btn-success btn-lg" @click="showEventsCart">See Cart</button>
       <div class="row">
@@ -218,6 +221,12 @@ export default {
     },
     login () {
       this.$router.replace({ path: '/userlogin' })
+    },
+    create () {
+      this.$router.replace({ path: '/createEvent', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
+    },
+    update () {
+      this.$router.replace({ path: '/updateEvent', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
     }
   },
   created () {
