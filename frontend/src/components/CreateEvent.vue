@@ -103,12 +103,12 @@ export default {
       evt.preventDefault()
       this.$refs.addEventModal.hide()
       const parameters = {
-        place: 'Platja',
-        name: 'Canet de Rock 2020',
-        city: 'Canet de Mar',
-        date: '2020-07-05',
-        price: '50',
-        total_available_tickets: '300'
+        place: this.addEventForm.place,
+        name: this.addEventForm.name,
+        city: this.addEventForm.city,
+        date: this.addEventForm.date,
+        price: this.addEventForm.price,
+        total_available_tickets: this.addEventForm.total_available_tickets
       }
       this.createEvent(parameters)
       alert('Event Created')
