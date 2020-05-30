@@ -113,7 +113,7 @@ class Event(Resource):
         data = parser.parse_args()
 
         new_event = EventModel(data['name'], data['place'], data['city'], data['date'], data['artists'],
-                               data['price'], data['total_available_tickets'])
+                               int(data['price']), int(data['total_available_tickets']))
 
         try:
             new_event.save_to_db()
