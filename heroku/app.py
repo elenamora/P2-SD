@@ -228,24 +228,31 @@ class EventArtist(Resource):
             return {'message': "Event with id [{}] Not found".format(id_event)}, 404
 
     @auth.login_required(role='admin')
-    def post(self, id_event, id_artist):
+    def post(self, id_event):
+        parser = reqparse.RequestParser()
+
+        parser.add_argument('name', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('country', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('genre', type=str, required=True, help="This field cannot be left blank")
+        data = parser.parse_args()
+
         event = EventModel.find_by_id(id_event)
-        artist_find = ArtistModel.find_by_id(id_artist)
+        artist_find = ArtistModel.find_by_name(data['name'])
 
         if event:
             if artist_find:
                 for artist in event.artists_table:
                     if artist_find == artist:
-                        return {'message': "Artist with id [{}] already in Event with id [{}]".format(id_artist, id_event)}, 200
+                        return {'message': "Artist with id [{}] already in Event with id [{}]".format(artist_find.id, id_event)}, 200
 
                 event.artists_table.append(artist_find)
                 try:
                     event.save_to_db()
-                    return {'message': "Artist with id [{}] added to Event with id [{}]".format(id_artist, id_event)}, 200
+                    return {'message': "Artist with id [{}] added to Event with id [{}]".format(artist_find.id, id_event)}, 200
                 except:
                     return {"message": "Database Error"}, 500
             else:
-                return {'message': "Artist with id [{}] Not found".format(id_artist)}, 404
+                return {'message': "Artist with id [{}] Not found".format(artist_find.id)}, 404
         else:
             return {'message': "Event with id [{}] Not found".format(id_event)}, 404
 
