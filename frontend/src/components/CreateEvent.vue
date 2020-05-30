@@ -59,7 +59,7 @@
       <b-form-group id="input-group-7" label="Tickets:" label-for="input-7">
         <b-form-input
           id="input-7"
-          v-model="addEventForm.tickets"
+          v-model="addEventForm.total_available_tickets"
           required
           placeholder="Enter tickets"
         ></b-form-input>
@@ -84,7 +84,7 @@ export default {
         country: '',
         city: '',
         place: '',
-        tickets: ''
+        total_available_tickets: ''
       },
       show: true
     }
@@ -97,11 +97,19 @@ export default {
       this.addEventForm.country = ''
       this.addEventForm.city = ''
       this.addEventForm.place = ''
-      this.addEventForm.tickets = ''
+      this.addEventForm.total_available_tickets = ''
     },
     onSubmit (evt) {
       evt.preventDefault()
-      this.createEvent()
+      const parameters = {
+        place: this.addEventForm.place,
+        name: this.addEventForm.name,
+        city: this.addEventForm.city,
+        date: this.addEventForm.date,
+        price: this.addEventForm.price,
+        total_available_tickets: this.addEventForm.total_available_tickets
+      }
+      this.createEvent(parameters)
       alert('Event Created')
       this.$router.replace({ path: '/', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
     },
@@ -115,9 +123,9 @@ export default {
         this.show = true
       })
     },
-    createEvent () {
+    createEvent (parameters) {
       const path = 'https://grupa7test-eventright.herokuapp.com/event'
-      axios.post(path, this.addEventForm, {
+      axios.post(path, parameters, {
         auth: {username: this.token}
       })
         .then(() => {
