@@ -101,7 +101,6 @@ export default {
     },
     onSubmit (evt) {
       evt.preventDefault()
-      this.$refs.addEventModal.hide()
       const parameters = {
         place: this.addEventForm.place,
         name: this.addEventForm.name,
