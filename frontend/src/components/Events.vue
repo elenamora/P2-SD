@@ -290,7 +290,6 @@ export default {
     },
     onSubmitAddArtistInEvent (evt) {
       evt.preventDefault()
-      this.$refs.addArtistModal.hide()
       const parameters = {
         name: this.addArtistForm.name,
         country: this.addArtistForm.country,
