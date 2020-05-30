@@ -5,6 +5,8 @@ import Login from '@/components/Login.vue'
 import createAccount from '@/components/createAccount.vue'
 import CreateEvent from '@/components/CreateEvent.vue'
 import updateEvent from '@/components/updateEvent.vue'
+import AddArtist from '@/components/AddArtist.vue'
+import UpdateArtist from '@/components/UpdateArtist.vue'
 
 Vue.use(Router)
 
@@ -36,6 +38,16 @@ export default new Router({
       path: '/updateEvent',
       name: 'updateEvent',
       component: updateEvent
+    },
+    {
+      path: '/addArtist',
+      name: 'addArtist',
+      component: AddArtist
+    },
+    {
+      path: '/updateArtist',
+      name: 'updateArtist',
+      component: UpdateArtist
     }
   ]
 })

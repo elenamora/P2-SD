@@ -11,6 +11,8 @@
     <button id="create" class="btn btn-success btn-lg" @click="create"> Create new Event </button>
     <button id="update" class="btn btn-success btn-lg" @click="update"> Update Event </button>
 
+    <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist"> Add Artist </button>
+
     <div class="container" id='cards'>
       <button id="events_cart" class="btn btn-success btn-lg" @click="showEventsCart">See Cart</button>
       <div class="row">
@@ -31,10 +33,11 @@
               <h5>{{ event.total_available_tickets }} €</h5>
 
               <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)"> Add Event </button>
+              <button id="addArtist" class="btn btn-success btn-lg" @click="addArtist()"> Add Artist to Event </button>
+              <button id="deleteArtist" class="btn btn-success btn-lg" @click="deleteArtist()"> Delete Artist in Event </button>
             </div>
             </div>
         </div>
-
       </div>
     </div>
 
@@ -227,6 +230,12 @@ export default {
     },
     update () {
       this.$router.replace({ path: '/updateEvent', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
+    },
+    createArtist () {
+      this.$router.replace({ path: '/addArtist', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
+    },
+    updateArtist () {
+      this.$router.replace({ path: '/updateArtist', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
     }
   },
   created () {

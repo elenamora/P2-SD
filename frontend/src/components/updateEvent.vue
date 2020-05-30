@@ -11,7 +11,7 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-2" label="Event Id:" label-for="input-2">
+      <b-form-group id="input-group-2" label="Event Name:" label-for="input-2">
         <b-form-input
           id="input-2"
           v-model="updateEventForm.name"
