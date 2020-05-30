@@ -136,13 +136,12 @@ class Event(Resource):
         event = EventModel.find_by_id(id)
 
         parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('place', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('city', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('date', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('artists', type=str, action="append", required=True, help="This field cannot be left blanck")
-        parser.add_argument('price', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('total_available_tickets', type=str)
+        parser.add_argument('name', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('place', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('city', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('date', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('price', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('total_available_tickets', type=str, required=True, help="This field cannot be left blank")
 
         data = parser.parse_args()
 
@@ -151,7 +150,6 @@ class Event(Resource):
             event.place = data['place']
             event.city = data['city']
             event.date = data['date']
-            event.artists = data['artists']
             event.price = data['price']
             event.total_available_tickets = data['total_available_tickets']
 
