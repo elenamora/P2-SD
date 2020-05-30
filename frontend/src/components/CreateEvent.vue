@@ -117,7 +117,9 @@ export default {
     },
     createEvent () {
       const path = 'https://grupa7test-eventright.herokuapp.com/event'
-      axios.post(path, this.addEventForm)
+      axios.post(path, this.addEventForm, {
+        auth: {username: this.token}
+      })
         .then(() => {
           console.log('Event Created')
         })

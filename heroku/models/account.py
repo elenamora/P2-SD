@@ -17,7 +17,7 @@ class AccountsModel(db.Model):
     available_money = db.Column(db.Integer)
     orders = db.relationship('OrdersModel', backref='orders', lazy=True)
 
-    def __init__(self, username, available_money=200, is_admin=1):
+    def __init__(self, username, available_money=200, is_admin=0):
         self.username = username
         self.available_money = available_money
         self.is_admin = is_admin
