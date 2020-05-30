@@ -102,13 +102,13 @@ class Event(Resource):
     def post(self):
 
         parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, required=True, help="This field cannot be left blanck")
         parser.add_argument('place', type=str, required=True, help="This field cannot be left blanck")
+        parser.add_argument('name', type=str, required=True, help="This field cannot be left blanck")
         parser.add_argument('city', type=str, required=True, help="This field cannot be left blanck")
         parser.add_argument('date', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('artists', type=str, action="append", help="This field cannot be left blanck")
         parser.add_argument('price', type=str, required=True, help="This field cannot be left blanck")
         parser.add_argument('total_available_tickets', type=str, required=True, help="This field cannot be left blanck")
+        parser.add_argument('artists', type=str, action="append")
 
         data = parser.parse_args()
 
