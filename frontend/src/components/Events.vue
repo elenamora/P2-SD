@@ -315,7 +315,7 @@ export default {
         })
     },
     addArtistInEvent (parameters) {
-      const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.event_id + '/artist'
+      const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.id + '/artist'
       document.getElementById('demo2').innerHTML = path
       axios.post(path, parameters, {
         auth: {username: this.token}
