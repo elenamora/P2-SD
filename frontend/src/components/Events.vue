@@ -12,6 +12,7 @@
     <button id="update" class="btn btn-success btn-lg" @click="update"> Update Event </button>
 
     <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist"> Add Artist </button>
+    <button id="updateArtist" class="btn btn-success btn-lg" @click="updateArtist"> Update Artist </button>
 
     <div class="container" id='cards'>
       <button id="events_cart" class="btn btn-success btn-lg" @click="showEventsCart">See Cart</button>
@@ -30,10 +31,10 @@
               <h6>{{ event.place }}</h6>
               <h6>{{ event.date }}</h6>
               <h6>{{ event.price }} €</h6>
-              <h5>{{ event.total_available_tickets }} €</h5>
+              <h5>{{ event.total_available_tickets }} </h5>
 
               <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)"> Add Event </button>
-              <button id="addArtist" class="btn btn-success btn-lg" @click="addArtist()"> Add Artist to Event </button>
+              <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Add Artist to Event </button>
               <button id="deleteArtist" class="btn btn-success btn-lg" @click="deleteArtist()"> Delete Artist in Event </button>
             </div>
             </div>
@@ -82,6 +83,42 @@
 
     </div>
 
+    <div id="addArtistToEvent" class="container">
+      <b-form @submit="onSubmitAddArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="addArtistModal">
+
+        <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
+          <b-form-input
+            id="input-1"
+            v-model="addArtistForm.name"
+            required
+            placeholder="Enter Artist Name"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group id="input-group-2" label="Country Artist:" label-for="input-2">
+          <b-form-input
+            id="input-2"
+            v-model="addArtistForm.country"
+            required
+            placeholder="Enter country"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group id="input-group-3" label="Genre Artist:" label-for="input-3">
+          <b-form-input
+            id="input-3"
+            v-model="addArtistForm.genre"
+            required
+            placeholder="Enter genre"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-button type="submit" variant="primary">Submit</b-button>
+        <b-button type="reset" variant="danger">Reset</b-button>
+      </b-form>
+
+    </div>
+
   </div>
 </template>
 
@@ -117,10 +154,21 @@ export default {
       i: 0,
       events: [],
       show: true,
-      total_tickets_bought: 0
+      total_tickets_bought: 0,
+      addArtistForm: {
+        id: '',
+        name: '',
+        country: '',
+        genre: ''
+      }
     }
   },
   methods: {
+    initForm () {
+      this.addArtistForm.name = ''
+      this.addArtistForm.country = ''
+      this.addEvenaddArtistFormtForm.genre = ''
+    },
     buyTickets (event) {
       const index = this.events_added.indexOf(event)
       this.events_added[index].quantity += 1
@@ -236,6 +284,61 @@ export default {
     },
     updateArtist () {
       this.$router.replace({ path: '/updateArtist', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
+    },
+    eventWhereModifyArtist (event) {
+      this.event_to_modify = event
+    },
+    onSubmitAddArtistInEvent (evt) {
+      evt.preventDefault()
+      this.$refs.addArtistModal.hide()
+      const parameters = {
+        name: this.addArtistForm.name,
+        country: this.addArtistForm.country,
+        genre: this.addArtistForm.genre
+      }
+      this.addNewArtist(parameters)
+      this.addArtistInEvent(parameters)
+      this.initForm()
+    },
+    addNewArtist (parameters) {
+      const path = 'https://grupa7test-eventright.herokuapp.com/artist'
+      axios.post(path, parameters, {
+        auth: {username: this.token}
+      })
+        .then(() => {
+          console.log('Artist Created')
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error)
+          alert('Artist already exists')
+          this.onReset()
+        })
+    },
+    addArtistInEvent (parameters) {
+      const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.event_id + '/artist'
+      axios.post(path, parameters, {
+        auth: {username: this.token}
+      })
+        .then(() => {
+          console.log('Artist Added to Event')
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error)
+          alert('Artist already added')
+          this.onReset()
+        })
+    },
+    onResetAddArtistInEvent (evt) {
+      evt.preventDefault()
+      // Reset our form values
+      this.initForm()
+      // Trick to reset/clear native browser form validation state
+      this.show = false
+      this.$nextTick(() => {
+        this.show = true
+      })
     }
   },
   created () {
