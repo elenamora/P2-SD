@@ -35,7 +35,7 @@
 
               <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)"> Add Event </button>
               <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Add Artist to Event </button>
-              <button id="deleteArtist" class="btn btn-success btn-lg" @click="deleteArtist()"> Delete Artist in Event </button>
+              <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Delete Artist in Event </button>
             </div>
             </div>
         </div>
