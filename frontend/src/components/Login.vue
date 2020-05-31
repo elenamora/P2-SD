@@ -66,7 +66,6 @@ export default {
       axios.get(path)
         .then((res) => {
           this.is_admin = res.data.user.is_admin
-          return this.is_admin
         })
         .catch((error) => {
           console.error(error)
@@ -81,6 +80,7 @@ export default {
     }
   },
   created () {
+    this.is_admin = 0
   }
 }
 </script>
