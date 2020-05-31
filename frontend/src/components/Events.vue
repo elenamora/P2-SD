@@ -120,7 +120,7 @@
     </div>
 
     <div id="deleteArtistToEvent" class="container">
-      <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onSubmitDeleteArtistInEvent" v-if="show" ref="deleteArtistModal">
+      <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="deleteArtistModal">
         <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
           <b-form-input
             id="input-1"
@@ -366,6 +366,7 @@ export default {
       for (let i = 0; i < this.event_to_modify.artists.length; i += 1) {
         if (this.event_to_modify.artists[i].name.localeCompare(this.deleteArtistForm.name)) {
           this.artist_id = this.event_to_modify.artists[i].id
+          document.getElementById('demo2').innerHTML = this.event_to_modify.artists[i].id
         }
       }
       const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.id + '/artist/' + this.artist_id
