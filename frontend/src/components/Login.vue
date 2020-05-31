@@ -61,7 +61,7 @@ export default {
       const path = 'https://grupa7test-eventright.herokuapp.com/account/' + this.username
       axios.get(path)
         .then((res) => {
-          this.is_admin = res.data.user.is_admin
+          this.is_admin = res.data.is_admin
           this.$router.replace({ path: '/', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
         })
         .catch((error) => {

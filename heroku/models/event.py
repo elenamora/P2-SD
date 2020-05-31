@@ -48,6 +48,10 @@ class EventModel(db.Model):
     def find_by_id(cls, id):
         return EventModel.query.filter_by(id=id).first()
 
+    @classmethod
+    def find_by_name(cls, name):
+        return EventModel.query.filter_by(name=name).first()
+
 
 
 

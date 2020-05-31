@@ -44,63 +44,69 @@ class Artist(Resource):
 
         parser.add_argument('name', type=str, required=True, help="This field cannot be left blank")
         parser.add_argument('country', type=str, required=True, help="This field cannot be left blank")
-        parser.add_argument('genre', type=str, required=True, help="This field cannot be left blank" )
+        parser.add_argument('genre', type=str, required=True, help="This field cannot be left blank")
         data = parser.parse_args()
 
-        new_artist = ArtistModel(data['name'], data['country'], data['genre'])
-        try:
-            new_artist.save_to_db()
-            return new_artist.json(), 200
-        except:
-            return {"message": "Database Error"}, 500
+        artist = ArtistModel.find_by_name(data['name'])
+
+        if artist:
+            return {"message": "Artist already exists"}, 409
+        else:
+            new_artist = ArtistModel(data['name'], data['country'], data['genre'])
+            try:
+                new_artist.save_to_db()
+                return new_artist.json(), 201
+            except:
+                return {"message": "Database Error"}, 500
 
     @auth.login_required(role='admin')
     def delete(self,id):
         artist = ArtistModel.find_by_id(id)
         if artist:
-            artist.delete_from_db()
-            return {'message': "Artist with id [{}] removed".format(id)}, 200
+            try:
+                artist.delete_from_db()
+                return {'message': "Artist with id [{}] removed".format(id)}, 200
+            except:
+                return {"message": "Database Error"}, 500
         else:
             return {'message': "Artist with id [{}] Not found".format(id)}, 404
 
     @auth.login_required(role='admin')
     def put(self,id):
-
         artist = ArtistModel.find_by_id(id)
 
         parser = reqparse.RequestParser()
-
-        parser.add_argument('name', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('country', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('genre', type=str, required=True, help="This field cannot be left blanck")
+        parser.add_argument('name', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('country', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('genre', type=str, required=True, help="This field cannot be left blank")
         data = parser.parse_args()
-
 
         if artist:
             artist.name = data['name']
             artist.country = data['country']
             artist.genre = data['genre']
-            artist.save_to_db()
-            return artist.json(), 200
+            try:
+                artist.save_to_db()
+                return artist.json(), 200
+            except:
+                return {"message": "Database Error"}, 500
 
         else:
             new_artist = ArtistModel(data['name'], data['country'], data['genre'])
-
-        try:
-            new_artist.save_to_db()
-            return new_artist.json(), 200
-        except:
-            return {"message": "Database Error"}, 500
+            try:
+                new_artist.save_to_db()
+                return new_artist.json(), 201
+            except:
+                return {"message": "Database Error"}, 500
 
     def get(self, id):
         artist = ArtistModel.find_by_id(id)
-        return artist.json(), 200 if artist else 404
+        return artist.json(), 200 if artist else {'message': "Artist with id [{}] Not found".format(id)}, 404
 
 class Event(Resource):
 
     @auth.login_required(role='admin')
     def post(self):
-
         parser = reqparse.RequestParser()
         parser.add_argument('place', type=str, required=True, help="This field cannot be left blak")
         parser.add_argument('name', type=str, required=True, help="This field cannot be left blank")
@@ -108,24 +114,30 @@ class Event(Resource):
         parser.add_argument('date', type=str, required=True, help="This field cannot be left blank")
         parser.add_argument('price', type=str, required=True, help="This field cannot be left blank")
         parser.add_argument('total_available_tickets', type=str, required=True, help="This field cannot be left blak")
-
         data = parser.parse_args()
 
-        new_event = EventModel(data['name'], data['place'], data['city'], data['date'],
-                               data['price'], data['total_available_tickets'])
+        event = EventModel.find_by_name(data['name'])
 
-        try:
-            new_event.save_to_db()
-            return new_event.json(), 200
-        except:
-            return {"message": "Database Error"}, 500
+        if event:
+            return {"message": "Event already exists"}, 409
+        else:
+            new_event = EventModel(data['name'], data['place'], data['city'], data['date'],
+                                   data['price'], data['total_available_tickets'])
+            try:
+                new_event.save_to_db()
+                return new_event.json(), 201
+            except:
+                return {"message": "Database Error"}, 500
 
     @auth.login_required(role='admin')
     def delete(self,id):
         event = EventModel.find_by_id(id)
         if event:
-            event.delete_from_db()
-            return {'message': "Event with id [{}] removed".format(id)}, 200
+            try:
+                event.delete_from_db()
+                return {'message': "Event with id [{}] removed".format(id)}, 200
+            except:
+                return {"message": "Database Error"}, 500
         else:
             return {'message': "Event with id [{}] Not found".format(id)}, 404
 
@@ -151,7 +163,6 @@ class Event(Resource):
             event.date = data['date']
             event.price = data['price']
             event.total_available_tickets = data['total_available_tickets']
-
             try:
                 event.save_to_db()
                 return event.json(), 200
@@ -163,38 +174,32 @@ class Event(Resource):
                                    data['price'], data['total_available_tickets'])
             try:
                 event.save_to_db()
-                return new_event.json(), 200
+                return new_event.json(), 201
             except:
                 return {"message": "Database Error"}, 500
 
 
     def get(self, id):
         event = EventModel.find_by_id(id)
-        return event.json(), 200 if event else 404
+        return event.json(), 200 if event else {'message': "Event with id [{}] Not found".format(id)}, 404
 
 class EventList(Resource):
     def get(self):
-        i = 1
-        event = EventModel.find_by_id(i)
-        events = []
-        while event:
-            events.append(event.json())
-            i += 1
-            event = EventModel.find_by_id(i)
+        events = EventModel.query.all()
+        all_events = []
+        for e in events:
+            all_events.append(e.json())
 
-        return {'events': events}, 200
+        return {'events': all_events}, 200
 
 class ArtistList(Resource):
     def get(self):
-        i = 1
-        artist = ArtistModel.find_by_id(i)
-        artists = []
-        while artist:
-            artists.append(artist.json())
-            i += 1
-            artist = ArtistModel.find_by_id(i)
+        artists = ArtistModel.query.all()
+        all_artists = []
+        for a in artists:
+            all_artists.append(a.json())
 
-        return {"artists":artists}, 200
+        return {'artists': all_artists}, 200
 
 class ArtistEventsList(Resource):
     def get(self, id):
@@ -229,7 +234,6 @@ class EventArtist(Resource):
     @auth.login_required(role='admin')
     def post(self, id_event):
         parser = reqparse.RequestParser()
-
         parser.add_argument('name', type=str, required=True, help="This field cannot be left blank")
         parser.add_argument('country', type=str, required=True, help="This field cannot be left blank")
         parser.add_argument('genre', type=str, required=True, help="This field cannot be left blank")
@@ -242,12 +246,12 @@ class EventArtist(Resource):
             if artist_find:
                 for artist in event.artists_table:
                     if artist_find == artist:
-                        return {'message': "Artist with id [{}] already in Event with id [{}]".format(artist_find.id, id_event)}, 200
+                        return {'message': "Artist with id [{}] already in Event with id [{}]".format(artist_find.id, id_event)}, 409
 
                 event.artists_table.append(artist_find)
                 try:
                     event.save_to_db()
-                    return {'message': "Artist with id [{}] added to Event with id [{}]".format(artist_find.id, id_event)}, 200
+                    return {'message': "Artist with id [{}] added to Event with id [{}]".format(artist_find.id, id_event)}, 201
                 except:
                     return {"message": "Database Error"}, 500
             else:
@@ -262,7 +266,6 @@ class EventArtist(Resource):
 
         if event:
             if artist:
-                #artist.events.remove(event)
                 event.artists_table.remove(artist)
                 try:
                     event.save_to_db()
@@ -279,70 +282,74 @@ class Orders(Resource):
     def get(self, username):
         if username == g.user.username:
             user = OrdersModel.find_by_username(username)
-            all_orders = []
+            orders = []
             for usr in user:
-                all_orders.append(usr.json())
-
-            return {'all_orders': all_orders}, 200
+                orders.append(usr.json())
+            return {'orders': orders}, 200
         else:
             return {"message": "User match not found"}, 400
 
     @auth.login_required(role='user')
     def post(self, username):
-
         if username == g.user.username:
             parser = reqparse.RequestParser()
-            parser.add_argument('event_id', type=int, required=True, help="This field cannot be left blanck")
-            parser.add_argument('tickets_bought', type=int, required=True, help="This field cannot be left blanck")
+            parser.add_argument('event_id', type=int, required=True, help="This field cannot be left blank")
+            parser.add_argument('tickets_bought', type=int, required=True, help="This field cannot be left blank")
             data = parser.parse_args()
 
             with lock.lock:
                 user = AccountsModel.find_by_username(username)
-                money = user.available_money
+                if user:
+                    event = EventModel.find_by_id(data['event_id'])
+                    if event:
+                        price = event.price
+                        total = price * data['tickets_bought']
 
-                event = EventModel.find_by_id(data['event_id'])
-                tickets = event.total_available_tickets
-                price = event.price
-                total = price * data['tickets_bought']
-
-                event.total_available_tickets -= data['tickets_bought']
-                user.available_money -= total
-                new_order = OrdersModel(data['event_id'], data['tickets_bought'])
-                user.orders.append(new_order)
-
-                try:
-                    db.session.add(new_order)
-                    db.session.add(event)
-                    db.session.add(user)
-                    money = user.available_money
-                    tickets = event.total_available_tickets
-                    if money >= 0 and tickets >= 0:
-                        db.session.commit()
-                        return new_order.json(), 200
+                        event.total_available_tickets -= data['tickets_bought']
+                        user.available_money -= total
+                        new_order = OrdersModel(data['event_id'], data['tickets_bought'])
+                        user.orders.append(new_order)
+                        try:
+                            db.session.add(new_order)
+                            db.session.add(event)
+                            db.session.add(user)
+                            money = user.available_money
+                            tickets = event.total_available_tickets
+                            if money >= 0 and tickets >= 0:
+                                try:
+                                    db.session.commit()
+                                    return new_order.json(), 200
+                                except:
+                                    return {"message": "Database Error"}, 500
+                            else:
+                                try:
+                                    db.session.rollback()
+                                    return {"message": "Not enough money/ not available tickets"}, 400
+                                except:
+                                    return {"message": "Database Error"}, 500
+                        except:
+                            return {"message": "Database Error"}, 500
                     else:
-                        db.session.rollback()
-                        return {"message": "Not enough money/ not available tickets"}, 400
-                except:
-                    return {"message": "Database Error"}, 500
+                        return {'message': "Event with id [{}] Not found".format(data['event_id'])}, 404
+                else:
+                    return {"message": "User Not found"}, 404
         else:
             return {"message": "User match not found"}, 400
 
 class OrdersList(Resource):
+    @auth.login_required(role='admin')
     def get(self):
-        i = 1
-        order = OrdersModel.find_by_id(i)
-        orders = []
-        while order:
-            orders.append(order.json())
-            i += 1
-            order = OrdersModel.find_by_id(i)
+        orders = OrdersModel.query.all()
+        all_orders = []
+        for o in orders:
+            all_orders.append(o.json())
 
-        return orders, 200
+        return {'orders': all_orders}, 200
 
 class Accounts(Resource):
     def get(self, username):
         user = AccountsModel.find_by_username(username)
-        return {'user': user.json()}, 200
+        return user.json(), 200
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -350,14 +357,17 @@ class Accounts(Resource):
         parser.add_argument('password', type=str, required=True, help="This field cannot be left blank")
         data = parser.parse_args()
 
-        new_user = AccountsModel(data['username'])
-        new_user.hash_password(data['password'])
-
-        try:
-            new_user.save_to_db()
-            return new_user.json(), 200
-        except:
-            return {"message": "Database error"}, 400
+        user = AccountsModel.find_by_username(data['username'])
+        if user:
+            return {"message": "User already exists"}, 409
+        else:
+            new_user = AccountsModel(data['username'])
+            new_user.hash_password(data['password'])
+            try:
+                new_user.save_to_db()
+                return new_user.json(), 200
+            except:
+                return {"message": "Database error"}, 500
 
     @auth.login_required(role='user')
     def delete(self, username):
@@ -368,20 +378,20 @@ class Accounts(Resource):
                 try:
                     user.save_to_db()
                 except:
-                    return {'message': "DataBase Error".format(username)}, 404
+                    return {'message': "DataBase Error"}, 500
                 user_order = OrdersModel.find_by_username(username)
                 for usr in user_order:
                     usr.delete_from_db()
                     try:
                         usr.save_to_db()
                     except:
-                        return {'message': "Database Error".format(username)}, 404
+                        return {'message': "Database Error"}, 500
 
-                return {'message': "Artist with username [{}] removed".format(username)}, 200
+                return {'message': "User with username [{}] removed".format(username)}, 200
             else:
-                return {'message': "Artist with username [{}] Not found".format(username)}, 404
+                return {'message': "User with username [{}] Not found".format(username)}, 404
         else:
-            return {'message': "User match not found".format(username)}, 400
+            return {'message': "User match not found"}, 400
 
 class AccountsList(Resource):
     def get(self):
@@ -390,13 +400,13 @@ class AccountsList(Resource):
         for u in users:
             all_accounts.append(u.json())
 
-        return all_accounts, 200
+        return {'accounts': all_accounts}, 200
 
 class Login(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('password', type=str, required=True, help="This field cannot be left blanck")
+        parser.add_argument('username', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('password', type=str, required=True, help="This field cannot be left blank")
         data = parser.parse_args()
 
         user = AccountsModel.find_by_username(data['username'])
