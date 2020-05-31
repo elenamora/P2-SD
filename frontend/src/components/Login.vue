@@ -51,7 +51,7 @@ export default {
           this.find_match = true
           this.getAccount()
           this.$router.replace({ path: '/', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
-          alert('User logged in')
+          alert('User logged in' + this.is_admin)
         })
         .catch((error) => {
           // eslint-disable-next-line
