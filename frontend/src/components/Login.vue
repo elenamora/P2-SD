@@ -49,8 +49,8 @@ export default {
           this.logged = true
           this.token = res.data.token
           this.find_match = true
-          this.is_admin = this.getAccount()
-          document.getElementById('demo').innerHTML = 'is admin' + this.is_admin
+          this.getAccount()
+          document.getElementById('demo').innerHTML = 'is admin ' + this.is_admin
           // this.$router.replace({ path: '/', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
           alert('User logged in')
         })
@@ -65,7 +65,8 @@ export default {
       const path = 'https://grupa7test-eventright.herokuapp.com/account/' + this.username
       axios.get(path)
         .then((res) => {
-          return res.data.user.is_admin
+          this.is_admin = res.data.user.is_admin
+          return this.is_admin
         })
         .catch((error) => {
           console.error(error)
