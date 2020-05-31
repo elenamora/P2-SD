@@ -35,7 +35,7 @@
 
               <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)"> Add Event </button>
               <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Add Artist to Event </button>
-              <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Delete Artist in Event </button>
+              <button id="deleteArtist" class="btn btn-success btn-lg" @click="deleteArtist()"> Delete Artist in Event </button>
             </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
     </div>
 
     <div id="addArtistToEvent" class="container">
-      <b-form @submit="onSubmitAddArtistInEvent" @reset="onReset" v-if="show" ref="addArtistModal">
+      <b-form @submit="onSubmitAddArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="addArtistModal">
 
         <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
           <b-form-input
@@ -120,12 +120,11 @@
     </div>
 
     <div id="deleteArtistToEvent" class="container">
-      <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onReset" v-if="show" ref="deleteArtistModal">
-
+      <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onSubmitDeleteArtistInEvent" v-if="show" ref="deleteArtistModal">
         <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
           <b-form-input
             id="input-1"
-            v-model="deleteArtistToEvent.name"
+            v-model="deleteArtistForm.name"
             required
             placeholder="Enter Artist Name"
           ></b-form-input>
@@ -145,13 +144,11 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
-
 td, th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
 }
-
 tr:nth-child(even) {
   background-color: #dddddd;
 }
@@ -159,7 +156,6 @@ tr:nth-child(even) {
 
 <script>
 import axios from 'axios'
-
 export default {
   data () {
     return {
@@ -188,8 +184,7 @@ export default {
     initForm () {
       this.addArtistForm.name = ''
       this.addArtistForm.country = ''
-      this.addArtistForm.genre = ''
-      this.deleteArtistForm.name = ''
+      this.addEvenaddArtistFormtForm.genre = ''
     },
     buyTickets (event) {
       const index = this.events_added.indexOf(event)
@@ -338,6 +333,7 @@ export default {
     },
     addArtistInEvent (parameters) {
       const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.id + '/artist'
+      document.getElementById('demo2').innerHTML = path
       axios.post(path, parameters, {
         auth: {username: this.token}
       })
@@ -351,7 +347,7 @@ export default {
           this.onReset()
         })
     },
-    onReset (evt) {
+    onResetAddArtistInEvent (evt) {
       evt.preventDefault()
       // Reset our form values
       this.initForm()
