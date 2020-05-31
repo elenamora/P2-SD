@@ -108,7 +108,6 @@ class Event(Resource):
         parser.add_argument('date', type=str, required=True, help="This field cannot be left blank")
         parser.add_argument('price', type=str, required=True, help="This field cannot be left blank")
         parser.add_argument('total_available_tickets', type=str, required=True, help="This field cannot be left blak")
-        parser.add_argument('artists', type=str, action="append")
 
         data = parser.parse_args()
 
