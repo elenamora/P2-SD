@@ -351,8 +351,8 @@ class Accounts(Resource):
 
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str, required=True, help="This field cannot be left blanck")
-        parser.add_argument('password', type=str, required=True, help="This field cannot be left blanck")
+        parser.add_argument('username', type=str, required=True, help="This field cannot be left blank")
+        parser.add_argument('password', type=str, required=True, help="This field cannot be left blank")
         data = parser.parse_args()
 
         new_user = AccountsModel(data['username'])

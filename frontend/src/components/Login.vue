@@ -24,6 +24,7 @@
        <button id="back" class="btn btn-success btn-lg" @click="backToEvents" > Back to events </button>
      </div>
 
+     <p id='demo'></p>
   </div>
 </template>
 
@@ -50,8 +51,8 @@ export default {
           this.token = res.data.token
           this.find_match = true
           this.getAccount()
-          this.$router.replace({ path: '/', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
-          alert('User logged in' + this.is_admin)
+          // this.$router.replace({ path: '/', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
+          alert('User logged in')
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -65,6 +66,7 @@ export default {
       axios.get(path)
         .then((res) => {
           this.is_admin = res.data.user.is_admin
+          document.getElementById('demo').innerHTML = res.data.user.is_admin
         })
         .catch((error) => {
           console.error(error)
