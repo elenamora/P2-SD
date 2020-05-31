@@ -33,10 +33,10 @@
               <h6>{{ event.price }} €</h6>
               <h5>{{ event.total_available_tickets }} </h5>
 
-              <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)"> Add Event </button>
-              <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Add Artist to Event </button>
-              <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Delete Artist in Event </button>
-              <button id="deleteEvent" class="btn btn-success btn-lg" @click="removeEvent(event.id)"> Delete Evennt </button>
+              <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)" v-if="logged && is_admin==0"> Add Event </button>
+              <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)" v-if="logged && is_admin==1"> Add Artist to Event </button>
+              <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)" v-if="logged && is_admin==1"> Delete Artist in Event </button>
+              <button id="deleteEvent" class="btn btn-success btn-lg" @click="removeEvent(event.id)" v-if="logged && is_admin==1"> Delete Event </button>
             </div>
             </div>
         </div>
