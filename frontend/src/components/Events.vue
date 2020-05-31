@@ -406,6 +406,7 @@ export default {
     this.is_admin = this.$route.query.is_admin
     this.token = this.$route.query.token
     this.getEvents()
+    document.getElementById('demo2').innerHTML = this.is_admin
     document.getElementById('cart').style.display = 'none'
     document.getElementById('cards').style.display = 'block'
   }
