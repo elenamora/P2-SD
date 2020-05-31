@@ -34,7 +34,8 @@ export default {
   data () {
     return {
       username: '',
-      password: ''
+      password: '',
+      is_admin: ''
     }
   },
   methods: {
@@ -66,6 +67,7 @@ export default {
       axios.get(path)
         .then((res) => {
           this.is_admin = res.data.user.is_admin
+          this.is_admin = res.data.user.is_admin
         })
         .catch((error) => {
           console.error(error)
@@ -80,7 +82,6 @@ export default {
     }
   },
   created () {
-    this.is_admin = ''
   }
 }
 </script>
