@@ -359,11 +359,11 @@ export default {
     },
     onSubmitDeleteArtistInEvent (evt) {
       evt.preventDefault()
+      document.getElementById('demo2').innerHTML = this.event_to_modify.artists[1].id
       this.deleteArtistInEvent()
       this.initForm()
     },
     deleteArtistInEvent () {
-      document.getElementById('demo2').innerHTML = this.event_to_modify.artists[2].id
       for (let i = 1; i < this.event_to_modify.artists.length; i += 1) {
         if (this.event_to_modify.artists[i].name.localeCompare(this.deleteArtistForm.name)) {
           this.artist_id = this.event_to_modify.artists[i].id
