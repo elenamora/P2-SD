@@ -184,7 +184,8 @@ export default {
     initForm () {
       this.addArtistForm.name = ''
       this.addArtistForm.country = ''
-      this.addEvenaddArtistFormtForm.genre = ''
+      this.addArtistForm.genre = ''
+      this.deleteArtistForm.name = ''
     },
     buyTickets (event) {
       const index = this.events_added.indexOf(event)
@@ -359,7 +360,7 @@ export default {
     },
     onSubmitDeleteArtistInEvent (evt) {
       evt.preventDefault()
-      document.getElementById('demo2').innerHTML = this.event_to_modify.artists[1].id
+      document.getElementById('demo2').innerHTML = 'estoy en delete'
       this.deleteArtistInEvent()
       this.initForm()
     },
