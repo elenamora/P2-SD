@@ -80,7 +80,7 @@ export default {
     }
   },
   created () {
-    this.is_admin = 0
+    this.is_admin = ''
   }
 }
 </script>
