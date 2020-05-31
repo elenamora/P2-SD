@@ -365,7 +365,7 @@ export default {
     },
     deleteArtistInEvent () {
       for (let i = 0; i < this.event_to_modify.artists.length; i += 1) {
-        if (this.event_to_modify.artists[i].name.localeCompare(this.deleteArtistForm.name)) {
+        if (this.event_to_modify.artists[i].name.localeCompare(this.deleteArtistForm.name) === 0) {
           this.artist_id = this.event_to_modify.artists[i].id
           document.getElementById('demo2').innerHTML = this.event_to_modify.artists[i].name
         }
