@@ -342,11 +342,8 @@ class OrdersList(Resource):
 
 class Accounts(Resource):
     def get(self, username):
-        if username == g.user.username:
-            user = AccountsModel.find_by_username(username)
-            return {'user': user.json()}, 200
-        else:
-            return {"message": "User match not found"}, 400
+        user = AccountsModel.find_by_username(username)
+        return {'user': user.json()}, 200
 
     def post(self):
         parser = reqparse.RequestParser()
