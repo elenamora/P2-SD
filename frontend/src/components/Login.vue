@@ -23,6 +23,7 @@
      <div class="row">
        <button id="back" class="btn btn-success btn-lg" @click="backToEvents" > Back to events </button>
      </div>
+     <p id='demo'></p>
 
   </div>
 </template>
@@ -64,6 +65,7 @@ export default {
       axios.get(path)
         .then((res) => {
           this.is_admin = res.data.user.is_admin
+          document.getElementById('demo').innerHTML = 'is admin' + this.is_admin
         })
         .catch((error) => {
           console.error(error)
