@@ -36,6 +36,7 @@
               <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)"> Add Event </button>
               <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Add Artist to Event </button>
               <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Delete Artist in Event </button>
+              <button id="deleteEvent" class="btn btn-success btn-lg" @click="removeEvent(event.id)"> Delete Evennt </button>
             </div>
             </div>
         </div>
@@ -367,11 +368,9 @@ export default {
       for (let i = 0; i < this.event_to_modify.artists.length; i += 1) {
         if (this.event_to_modify.artists[i].name.localeCompare(this.deleteArtistForm.name) === 0) {
           this.artist_id = this.event_to_modify.artists[i].id
-          document.getElementById('demo2').innerHTML = this.event_to_modify.artists[1].id
         }
       }
       const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.id + '/artist/' + this.artist_id
-      document.getElementById('demo').innerHTML = path
       axios.delete(path, {
         auth: {username: this.token}
       })
@@ -382,6 +381,21 @@ export default {
           // eslint-disable-next-line
           console.log(error)
           alert('No Artist with this name')
+          this.onReset()
+        })
+    },
+    removeEvent (id) {
+      const path = 'https://grupa7test-eventright.herokuapp.com/event/' + id
+      axios.delete(path, {
+        auth: {username: this.token}
+      })
+        .then(() => {
+          console.log('Event Deleted')
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error)
+          alert('No Event with this name')
           this.onReset()
         })
     }
