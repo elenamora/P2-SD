@@ -367,7 +367,7 @@ export default {
       for (let i = 0; i < this.event_to_modify.artists.length; i += 1) {
         if (this.event_to_modify.artists[i].name.localeCompare(this.deleteArtistForm.name) === 0) {
           this.artist_id = this.event_to_modify.artists[i].id
-          document.getElementById('demo2').innerHTML = this.event_to_modify.artists[i].name
+          document.getElementById('demo2').innerHTML = this.event_to_modify.artists[1].id
         }
       }
       const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.id + '/artist/' + this.artist_id
