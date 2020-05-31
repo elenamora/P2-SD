@@ -35,7 +35,7 @@
 
               <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)"> Add Event </button>
               <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Add Artist to Event </button>
-              <button id="deleteArtist" class="btn btn-success btn-lg" @click="deleteArtist()"> Delete Artist in Event </button>
+              <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)"> Delete Artist in Event </button>
             </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
     </div>
 
     <div id="addArtistToEvent" class="container">
-      <b-form @submit="onSubmitAddArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="addArtistModal">
+      <b-form @submit="onSubmitAddArtistInEvent" @reset="onReset" v-if="show" ref="addArtistModal">
 
         <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
           <b-form-input
@@ -117,6 +117,23 @@
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
 
+    </div>
+
+    <div id="deleteArtistToEvent" class="container">
+      <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onReset" v-if="show" ref="deleteArtistModal">
+
+        <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
+          <b-form-input
+            id="input-1"
+            v-model="deleteArtistToEvent.name"
+            required
+            placeholder="Enter Artist Name"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-button type="submit" variant="primary">Submit</b-button>
+        <b-button type="reset" variant="danger">Reset</b-button>
+      </b-form>
     </div>
 
   </div>
@@ -160,6 +177,10 @@ export default {
         name: '',
         country: '',
         genre: ''
+      },
+      deleteArtistForm: {
+        id: '',
+        name: ''
       }
     }
   },
@@ -167,7 +188,8 @@ export default {
     initForm () {
       this.addArtistForm.name = ''
       this.addArtistForm.country = ''
-      this.addEvenaddArtistFormtForm.genre = ''
+      this.addArtistForm.genre = ''
+      this.deleteArtistForm.name = ''
     },
     buyTickets (event) {
       const index = this.events_added.indexOf(event)
@@ -316,7 +338,6 @@ export default {
     },
     addArtistInEvent (parameters) {
       const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.id + '/artist'
-      document.getElementById('demo2').innerHTML = path
       axios.post(path, parameters, {
         auth: {username: this.token}
       })
@@ -330,7 +351,7 @@ export default {
           this.onReset()
         })
     },
-    onResetAddArtistInEvent (evt) {
+    onReset (evt) {
       evt.preventDefault()
       // Reset our form values
       this.initForm()
@@ -339,6 +360,31 @@ export default {
       this.$nextTick(() => {
         this.show = true
       })
+    },
+    onSubmitDeleteArtistInEvent (evt) {
+      evt.preventDefault()
+      this.deleteArtistInEvent()
+      this.initForm()
+    },
+    deleteArtistInEvent () {
+      for (let i = 0; i < this.event_to_modify.artists.length; i += 1) {
+        if (this.event_to_modify.artists[i].name.localeCompare(this.deleteArtistForm.name)) {
+          this.artist_id = this.event_to_modify.artists[i].id
+        }
+      }
+      const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.id + '/artist/' + this.artist_id
+      axios.delete(path, {
+        auth: {username: this.token}
+      })
+        .then(() => {
+          console.log('Artist Deleted to Event')
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error)
+          alert('No Artist with this name')
+          this.onReset()
+        })
     }
   },
   created () {
