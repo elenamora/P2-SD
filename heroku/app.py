@@ -341,7 +341,6 @@ class OrdersList(Resource):
         return orders, 200
 
 class Accounts(Resource):
-    @auth.login_required(role='user')
     def get(self, username):
         if username == g.user.username:
             user = AccountsModel.find_by_username(username)
