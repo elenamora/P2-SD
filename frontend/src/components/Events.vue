@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <div class="row mt-3 mb-3">
-      <div class="col-8">
+      <div class="col-9">
         <h1> {{ message }} </h1>
       </div>
-      <div class="col-4" style="text-align:left;">
+      <div class="col-3" style="text-align:left;">
         <div class="row mb-2">
           <div v-if="logged">
             <button id="logout" class="btn btn-danger btn-lg" @click="login"> Logout </button>
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div>
 
       <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
       <button id="update" class="btn btn-primary btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
@@ -32,36 +32,42 @@
 
       <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
 
-      <div class="container" id='cards' v-if="show">
-        <div class="row">
-          <div class="col-lg-4 col-md-6 mb-4" v-for="(event) in events" :key="event.id">
-            <br>
-            <div class="card" style="width: 18rem;">
-              <img class="card-img-top" src="../assets/logo.png" alt="Event">
-              <div class="card-body">
-                <h6>{{ event.name }}</h6>
-                <div v-for="(artist) in event.artists" :key="artist.id">
-                    <h5>{{ artist.name }}</h5>
-                </div>
-                <h5>{{ event.country }}</h5>
-                <h6>{{ event.city }}</h6>
-                <h6>{{ event.place }}</h6>
-                <h6>{{ event.date }}</h6>
-                <h6>{{ event.price }} €</h6>
-                <h5>{{ event.total_available_tickets }} </h5>
+      <div class="mt-5" id='cards' v-if="show">
+        <section class="parallax">
+          <div class="parallax-inner" style="padding-top: 5%;padding-bottom: 5%;">
+            <div class="container">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 mb-4" v-for="(event) in events" :key="event.id">
+                <br>
+                <div class="card h-100" style="width: 18rem;">
+                  <img class="card-img-top" src="../assets/logo.png" alt="Event">
+                  <div class="card-body">
+                    <h3>{{ event.name }}</h3>
+                    <div v-for="(artist) in event.artists" :key="artist.id">
+                        <h5>{{ artist.name }}</h5>
+                    </div>
+                    <h5>{{ event.country }}</h5>
+                    <h6>{{ event.city }}</h6>
+                    <h6>{{ event.place }}</h6>
+                    <h6>{{ event.date }}</h6>
+                    <h6>Price: {{ event.price }} €</h6>
+                    <h5>{{ event.total_available_tickets }} </h5>
 
-                <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)" v-if="logged && is_admin==0 && event.total_available_tickets > 0"> Add Event </button>
-                <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event, 0)" v-if="logged && is_admin==1"> Add Artist to Event </button>
-                <button id="deleteArtist" class="btn btn-danger btn-lg" @click="eventWhereModifyArtist(event, 1)" v-if="logged && is_admin==1"> Delete Artist in Event </button>
-                <button id="deleteEvent" class="btn btn-danger btn-lg" @click="removeEvent(event.id)" v-if="logged && is_admin==1"> Delete Event </button>
+                    <b-button id="add" class="btn btn-success btn-lg mt-2 w-100" @click="addEvent(event)" v-if="logged && is_admin==0 && event.total_available_tickets > 0"> Add Event </b-button>
+                    <b-button id="addArtist" class="btn btn-success btn-lg mt-2 w-100" @click="eventWhereModifyArtist(event, 0)" v-if="logged && is_admin==1"> Add Artist to Event </b-button>
+                    <b-button id="deleteArtist" class="btn btn-danger btn-lg mt-2 w-100" @click="eventWhereModifyArtist(event, 1)" v-if="logged && is_admin==1"> Delete Artist in Event </b-button>
+                    <b-button id="deleteEvent" class="btn btn-danger btn-lg mt-2 w-100" @click="removeEvent(event.id)" v-if="logged && is_admin==1"> Delete Event </b-button>
+                  </div>
+                  </div>
               </div>
-              </div>
+            </div>
           </div>
-        </div>
+          </div>
+        </section>
       </div>
 
       <div v-else>
-        <div class="container" id="cart" v-if="logged && is_admin==0">
+        <div class="" id="cart" v-if="logged && is_admin==0">
               <table class="table shopping-cart-wrap">
                 <thead class="text-muted">
                     <tr>
@@ -171,6 +177,10 @@ td, th {
 }
 tr:nth-child(even) {
   background-color: #dddddd;
+}
+
+.parallax {
+   background: url('../assets/concert2.jpg') repeat fixed 100%;
 }
 </style>
 
