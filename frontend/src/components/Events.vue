@@ -8,11 +8,11 @@
 
     <button id="login" class="btn btn-success btn-lg" @click="login"> Login </button>
 
-    <button id="create" class="btn btn-success btn-lg" @click="create"> Create new Event </button>
-    <button id="update" class="btn btn-success btn-lg" @click="update"> Update Event </button>
+    <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
+    <button id="update" class="btn btn-success btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
 
-    <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist"> Add Artist </button>
-    <button id="updateArtist" class="btn btn-success btn-lg" @click="updateArtist"> Update Artist </button>
+    <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist" v-if="logged && is_admin==1"> Add Artist </button>
+    <button id="updateArtist" class="btn btn-success btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
 
     <div class="container" id='cards'>
       <button id="events_cart" class="btn btn-success btn-lg" @click="showEventsCart">See Cart</button>
@@ -250,7 +250,6 @@ export default {
           event_id: this.events_added[i].id,
           tickets_bought: this.events_added[i].quantity
         }
-        document.getElementById('demo2').innerHTML = 'parametros'
         this.addPurchase(parameters)
       }
       this.getEvents()

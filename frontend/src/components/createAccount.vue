@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container mt-5" style="width:400px;">
+    <h2 class="mb-5">CREATE NEW ACCOUNT</h2>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-
       <b-form-group id="input-group-1" label="Your Name:" label-for="input-1">
         <b-form-input
           id="input-1"
@@ -23,11 +23,10 @@
           placeholder="Enter password"
         ></b-form-input>
       </b-form-group>
-
       <b-button type="submit" variant="primary">Submit</b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
+      <b-button id="back" class="btn btn-secondary" @click="backToLogin">Back</b-button>
     </b-form>
-
   </div>
 </template>
 
@@ -77,6 +76,9 @@ export default {
           alert('Account already exists')
           this.onReset()
         })
+    },
+    backToLogin () {
+      this.$router.replace({ path: '/userlogin' })
     }
   }
 }

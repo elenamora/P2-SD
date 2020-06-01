@@ -1,28 +1,37 @@
 <template>
-  <div class="container">
-    <div class="form-label-group">
-       <label for="inputEmail">Username</label>
-       <input type="username" id="inputUsername" class="form-control"
-       placeholder="Username" required autofocus v-model="username">
-     </div>
+  <div class="row">
+    <div class="col-8">
+      <img src="assets/logo.png" alt="Concert" style="width: 100%;height:100vh">
+    </div>
+    <div class="col-4">
+      <div class="container mt-5" style="width:400px;">
+        <form>
+          <div class="form-label-group">
+             <label for="inputEmail">Username</label>
+             <input type="username" id="inputUsername" class="form-control"
+             placeholder="Username" required autofocus v-model="username">
+           </div>
 
-     <div class="form-label-group">
-       <br>
-       <label for="inputPassword">Password</label>
-       <input type="password" id="inputPassword" class="form-control"
-       placeholder="Password" required v-model="password">
-     </div>
+           <div class="form-label-group">
+             <br>
+             <label for="inputPassword">Password</label>
+             <input type="password" id="inputPassword" class="form-control"
+             placeholder="Password" required v-model="password">
+           </div>
 
-     <div class="row">
-       <button id="signin" class="btn btn-success btn-lg" @click="checkLogin" > Sign In </button>
-       <p id="debug"> </p>
-     </div>
-     <div class="row">
-       <button id="createAccount" class="btn btn-success btn-lg"  @click="createAccount"> Create Account </button>
-     </div>
-     <div class="row">
-       <button id="back" class="btn btn-success btn-lg" @click="backToEvents" > Back to events </button>
-     </div>
+           <div class="form-row mt-5">
+             <button id="signin" class="btn btn-success btn-lg" @click="checkLogin" style="width:400px;"> Sign In </button>
+             <p id="debug"> </p>
+           </div>
+           <div class="form-row mb-3">
+             <button id="createAccount" class="btn btn-primary btn-lg"  @click="createAccount" style="width:400px;"> Create Account </button>
+           </div>
+           <div class="form-row">
+             <button id="back" class="btn btn-secondary btn-lg" @click="backToEvents" style="width:400px;"> Back to events </button>
+           </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
