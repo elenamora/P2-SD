@@ -105,7 +105,7 @@
       <div id="addArtistToEvent" class="container" v-if="showAddArtist">
         <h3 class="mt-5"> Add Artist to Event</h3>
         <hr class="mb-3">
-        <b-form @submit="onSubmitAddArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="addArtistModal">
+        <b-form class="mb-5" @submit="onSubmitAddArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="addArtistModal">
 
           <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
             <b-form-input
@@ -144,7 +144,7 @@
       <div id="deleteArtistToEvent" class="container" v-if="showDeleteArtist">
         <h3 class="mt-5"> Delete Artist from Event</h3>
         <hr class="mb-3">
-        <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="deleteArtistModal">
+        <b-form class="mb-5" @submit="onSubmitDeleteArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="deleteArtistModal">
           <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
             <b-form-input
               id="input-1"
