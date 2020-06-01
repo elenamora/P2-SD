@@ -67,9 +67,9 @@
       </div>
 
       <div v-else>
-        <div class="container" id="cart" v-if="logged && is_admin==0">
-              <table class="table shopping-cart-wrap">
-                <thead class="text-muted">
+        <div class="container mt-5" id="cart" v-if="logged && is_admin==0">
+              <table class="table">
+                <thead class="text-muted thead-light">
                     <tr>
                       <th>Event Name</th>
                       <th>Quantity</th>
@@ -78,19 +78,17 @@
                       <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                  <div v-for="(event) in events_added" :key="event.id">
-                      <tr>
-                        <td data-th="Event Name">{{ event.name }}</td>
-                        <td data-th="Quantity"> {{ event.quantity }}
-                          <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)"> - </button>
-                          <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)" :disabled="itemIsDisabled(event)"> + </button>
-                        </td>
-                        <td data-th="Price(€)">{{ event.price }}</td>
-                        <td data-th="Total">{{ event.quantity * event.price }}</td>
-                        <td class="actions" data-th=""><button class="btn btn-danger btn-sm" @click="deleteOrder">Remove</button></td>
-                      </tr>
-                    </div>
+                <tbody v-for="(event) in events_added" :key="event.id">
+                    <tr>
+                      <td scope="row" data-th="Event Name">{{ event.name }}</td>
+                      <td data-th="Quantity"> {{ event.quantity }}
+                        <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)"> - </button>
+                        <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)" :disabled="itemIsDisabled(event)"> + </button>
+                      </td>
+                      <td data-th="Price(€)">{{ event.price }}</td>
+                      <td data-th="Total">{{ event.quantity * event.price }}</td>
+                      <td class="actions" data-th=""><button class="btn btn-danger btn-sm" @click="deleteOrder">Remove</button></td>
+                    </tr>
                  </tbody>
                  <tfoot>
                     <tr>
@@ -165,19 +163,6 @@
 </template>
 
 <style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
 
 .parallax {
    background: url('../assets/concert2.jpg') repeat fixed 100%;
