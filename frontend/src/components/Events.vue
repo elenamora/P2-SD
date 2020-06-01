@@ -67,7 +67,7 @@
       </div>
 
       <div v-else>
-        <div class="" id="cart" v-if="logged && is_admin==0">
+        <div class="container" id="cart" v-if="logged && is_admin==0">
               <table class="table shopping-cart-wrap">
                 <thead class="text-muted">
                     <tr>
