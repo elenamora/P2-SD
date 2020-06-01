@@ -1,6 +1,7 @@
 <template>
   <div class="container mt-5" style="width:400px;">
-    <h2 class="mb-5">CREATE NEW ACCOUNT</h2>
+    <h2>CREATE NEW ACCOUNT</h2>
+    <hr class="mb-5">
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group id="input-group-1" label="Your Name:" label-for="input-1">
         <b-form-input

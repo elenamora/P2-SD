@@ -1,140 +1,158 @@
 <template>
   <div id="app">
-    <h1> {{ message }} </h1>
-    <h4 v-if="logged && is_admin==0"> Total tickets bought: {{ total_tickets_bought }} </h4>
-    <h4 v-if="logged && is_admin==0"> Money available: {{ money }} </h4>
-
-    <div v-if="logged">
-      <button id="logout" class="btn btn-danger btn-lg" @click="login"> Logout </button>
-    </div>
-    <div v-else>
-      <button id="login" class="btn btn-success btn-lg" @click="login"> Login </button>
-    </div>
-
-    <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
-    <button id="update" class="btn btn-success btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
-
-    <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist" v-if="logged && is_admin==1"> Add Artist </button>
-    <button id="updateArtist" class="btn btn-success btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
-
-    <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
-
-    <div class="container" id='cards' v-if="show">
-      <div class="row">
-        <div class="col-lg-4 col-md-6 mb-4" v-for="(event) in events" :key="event.id">
-          <br>
-          <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="" alt="Card image cap">
-            <div class="card-body">
-              <h6>{{ event.name }}</h6>
-              <div v-for="(artist) in event.artists" :key="artist.id">
-                  <h5>{{ artist.name }}</h5>
-              </div>
-              <h5>{{ event.country }}</h5>
-              <h6>{{ event.city }}</h6>
-              <h6>{{ event.place }}</h6>
-              <h6>{{ event.date }}</h6>
-              <h6>{{ event.price }} €</h6>
-              <h5>{{ event.total_available_tickets }} </h5>
-
-              <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)" v-if="logged && is_admin==0 && event.total_available_tickets > 0"> Add Event </button>
-              <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event, 0)" v-if="logged && is_admin==1"> Add Artist to Event </button>
-              <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event, 1)" v-if="logged && is_admin==1"> Delete Artist in Event </button>
-              <button id="deleteEvent" class="btn btn-success btn-lg" @click="removeEvent(event.id)" v-if="logged && is_admin==1"> Delete Event </button>
-            </div>
-            </div>
+    <div class="row mt-3 mb-3">
+      <div class="col-8">
+        <h1> {{ message }} </h1>
+      </div>
+      <div class="col-4" style="text-align:left;">
+        <div class="row mb-2">
+          <div v-if="logged">
+            <button id="logout" class="btn btn-danger btn-lg" @click="login"> Logout </button>
+          </div>
+          <div v-else>
+            <button id="login" class="btn btn-success btn-lg" @click="login"> Login </button>
+          </div>
+        </div>
+        <div class="row">
+          <h4 v-if="logged && is_admin==0"> Total tickets bought: {{ total_tickets_bought }} </h4>
+        </div>
+        <div class="row">
+          <h4 v-if="logged && is_admin==0"> Money available: {{ money }} </h4>
         </div>
       </div>
     </div>
 
-    <div v-else>
-      <div class="container" id="cart" v-if="logged && is_admin==0">
-            <table class="table">
-              <thead>
-                  <tr>
-                    <th>Event Name</th>
-                    <th>Quantity</th>
-                    <th>Price(€)</th>
-                    <th>Total</th>
-                    <th></th>
-                  </tr>
-              </thead>
-              <tbody>
-                <div v-for="(event) in events_added" :key="event.id">
-                    <tr>
-                      <td data-th="Event Name">{{ event.name }}</td>
-                      <td data-th="Quantity"> {{ event.quantity }}
-                        <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)"> - </button>
-                        <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)" :disabled="itemIsDisabled(event)"> + </button>
-                      </td>
-                      <td data-th="Price(€)">{{ event.price }}</td>
-                      <td data-th="Total">{{ event.quantity * event.price }}</td>
-                      <td class="actions" data-th=""><button class="btn btn-danger btn-sm" @click="deleteOrder">Delete</button></td>
-                    </tr>
-                  </div>
-               </tbody>
-               <tfoot>
-                  <tr>
-                      <td><button id="continue" class="btn btn-success btn-lg" @click="updateShow">Continue shopping</button></td>
-                      <td><button id="finish" class="btn btn-success btn-block" @click="finalizePurchase">Finish Purchase</button></td>
-                  </tr>
-               </tfoot>
-            </table>
+    <div class="container">
+
+      <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
+      <button id="update" class="btn btn-primary btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
+
+      <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist" v-if="logged && is_admin==1"> Add Artist </button>
+      <button id="updateArtist" class="btn btn-primary btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
+
+      <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
+
+      <div class="container" id='cards' v-if="show">
+        <div class="row">
+          <div class="col-lg-4 col-md-6 mb-4" v-for="(event) in events" :key="event.id">
+            <br>
+            <div class="card" style="width: 18rem;">
+              <img class="card-img-top" src="../assets/logo.png" alt="Event">
+              <div class="card-body">
+                <h6>{{ event.name }}</h6>
+                <div v-for="(artist) in event.artists" :key="artist.id">
+                    <h5>{{ artist.name }}</h5>
+                </div>
+                <h5>{{ event.country }}</h5>
+                <h6>{{ event.city }}</h6>
+                <h6>{{ event.place }}</h6>
+                <h6>{{ event.date }}</h6>
+                <h6>{{ event.price }} €</h6>
+                <h5>{{ event.total_available_tickets }} </h5>
+
+                <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)" v-if="logged && is_admin==0 && event.total_available_tickets > 0"> Add Event </button>
+                <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event, 0)" v-if="logged && is_admin==1"> Add Artist to Event </button>
+                <button id="deleteArtist" class="btn btn-danger btn-lg" @click="eventWhereModifyArtist(event, 1)" v-if="logged && is_admin==1"> Delete Artist in Event </button>
+                <button id="deleteEvent" class="btn btn-danger btn-lg" @click="removeEvent(event.id)" v-if="logged && is_admin==1"> Delete Event </button>
+              </div>
+              </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div id="addArtistToEvent" class="container" v-if="showAddArtist">
-      <b-form @submit="onSubmitAddArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="addArtistModal">
+      <div v-else>
+        <div class="container" id="cart" v-if="logged && is_admin==0">
+              <table class="table shopping-cart-wrap">
+                <thead class="text-muted">
+                    <tr>
+                      <th>Event Name</th>
+                      <th>Quantity</th>
+                      <th>Price(€)</th>
+                      <th>Total</th>
+                      <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <div v-for="(event) in events_added" :key="event.id">
+                      <tr>
+                        <td data-th="Event Name">{{ event.name }}</td>
+                        <td data-th="Quantity"> {{ event.quantity }}
+                          <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)"> - </button>
+                          <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)" :disabled="itemIsDisabled(event)"> + </button>
+                        </td>
+                        <td data-th="Price(€)">{{ event.price }}</td>
+                        <td data-th="Total">{{ event.quantity * event.price }}</td>
+                        <td class="actions" data-th=""><button class="btn btn-danger btn-sm" @click="deleteOrder">Remove</button></td>
+                      </tr>
+                    </div>
+                 </tbody>
+                 <tfoot>
+                    <tr>
+                        <td><button id="continue" class="btn btn-success btn-lg" @click="updateShow">Continue shopping</button></td>
+                        <td><button id="finish" class="btn btn-success btn-block" @click="finalizePurchase">Finish Purchase</button></td>
+                    </tr>
+                 </tfoot>
+              </table>
+        </div>
+      </div>
 
-        <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
-          <b-form-input
-            id="input-1"
-            v-model="addArtistForm.name"
-            required
-            placeholder="Enter Artist Name"
-          ></b-form-input>
-        </b-form-group>
+      <div id="addArtistToEvent" class="container" v-if="showAddArtist">
+        <h3> Add Artist to Event</h3>
+        <hr class="mb-3">
+        <b-form @submit="onSubmitAddArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="addArtistModal">
 
-        <b-form-group id="input-group-2" label="Country Artist:" label-for="input-2">
-          <b-form-input
-            id="input-2"
-            v-model="addArtistForm.country"
-            required
-            placeholder="Enter country"
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
+            <b-form-input
+              id="input-1"
+              v-model="addArtistForm.name"
+              required
+              placeholder="Enter Artist Name"
+            ></b-form-input>
+          </b-form-group>
 
-        <b-form-group id="input-group-3" label="Genre Artist:" label-for="input-3">
-          <b-form-input
-            id="input-3"
-            v-model="addArtistForm.genre"
-            required
-            placeholder="Enter genre"
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group id="input-group-2" label="Country Artist:" label-for="input-2">
+            <b-form-input
+              id="input-2"
+              v-model="addArtistForm.country"
+              required
+              placeholder="Enter country"
+            ></b-form-input>
+          </b-form-group>
 
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
-        <b-button id="back1" class="btn btn-secondary" @click="getBack">Back</b-button>
-      </b-form>
+          <b-form-group id="input-group-3" label="Genre Artist:" label-for="input-3">
+            <b-form-input
+              id="input-3"
+              v-model="addArtistForm.genre"
+              required
+              placeholder="Enter genre"
+            ></b-form-input>
+          </b-form-group>
 
-    </div>
+          <b-button class="mt-2" type="submit" variant="primary">Submit</b-button>
+          <b-button class="mt-2" type="reset" variant="danger">Reset</b-button>
+          <b-button id="back1" class="btn btn-secondary mt-2" @click="getBack">Back</b-button>
+        </b-form>
 
-    <div id="deleteArtistToEvent" class="container" v-if="showDeleteArtist">
-      <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="deleteArtistModal">
-        <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
-          <b-form-input
-            id="input-1"
-            v-model="deleteArtistForm.name"
-            required
-            placeholder="Enter Artist Name"
-          ></b-form-input>
-        </b-form-group>
+      </div>
 
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
-        <b-button id="back2" class="btn btn-secondary" @click="getBack">Back</b-button>
-      </b-form>
+      <div id="deleteArtistToEvent" class="container" v-if="showDeleteArtist">
+        <h3> Delete Artist from Event</h3>
+        <hr class="mb-3">
+        <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="deleteArtistModal">
+          <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
+            <b-form-input
+              id="input-1"
+              v-model="deleteArtistForm.name"
+              required
+              placeholder="Enter Artist Name"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="reset" variant="danger">Reset</b-button>
+          <b-button id="back2" class="btn btn-secondary" @click="getBack">Back</b-button>
+        </b-form>
+      </div>
     </div>
 
   </div>

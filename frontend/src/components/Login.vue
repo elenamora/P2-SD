@@ -1,10 +1,12 @@
 <template>
   <div class="row">
     <div class="col-8">
-      <img src="assets/logo.png" alt="Concert" style="width: 100%;height:100vh">
+      <img src="../assets/concert.jpg" alt="Concert" style="width: 100%;height:100vh">
     </div>
     <div class="col-4">
       <div class="container mt-5" style="width:400px;">
+          <h1 style="text-align:center">SIGN IN</h1>
+          <hr class="mb-5">
           <div class="form-label-group">
              <label for="username">Username</label>
              <input type="username" id="inputUsername" class="form-control"
