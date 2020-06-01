@@ -5,9 +5,8 @@
     </div>
     <div class="col-4">
       <div class="container mt-5" style="width:400px;">
-        <form>
           <div class="form-label-group">
-             <label for="inputEmail">Username</label>
+             <label for="username">Username</label>
              <input type="username" id="inputUsername" class="form-control"
              placeholder="Username" required autofocus v-model="username">
            </div>
@@ -29,7 +28,6 @@
            <div class="form-row">
              <button id="back" class="btn btn-secondary btn-lg" @click="backToEvents" style="width:400px;"> Back to events </button>
            </div>
-        </form>
       </div>
     </div>
   </div>

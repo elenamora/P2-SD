@@ -2,11 +2,15 @@
   <div id="app">
     <h1> {{ message }} </h1>
     <button id="buy" class="btn btn-success btn-lg" @click="getInfo"> Info User </button>
-    <button id="return" class="btn btn-success btn-lg" @click="getUser" disabled> Info User </button>
-    <h4> Total tickets bought: {{ tickets_bought }} </h4>
+    <h4> Total tickets bought: {{ total_tickets_bought }} </h4>
     <h4> Money available: {{ money }} </h4>
 
-    <button id="login" class="btn btn-success btn-lg" @click="login"> Login </button>
+    <div v-if="logged">
+      <button id="logout" class="btn btn-danger btn-lg" @click="login"> Logout </button>
+    </div>
+    <div v-else>
+      <button id="login" class="btn btn-success btn-lg" @click="login"> Login </button>
+    </div>
 
     <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
     <button id="update" class="btn btn-success btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
@@ -14,8 +18,15 @@
     <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist" v-if="logged && is_admin==1"> Add Artist </button>
     <button id="updateArtist" class="btn btn-success btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
 
-    <div class="container" id='cards'>
-      <button id="events_cart" class="btn btn-success btn-lg" @click="showEventsCart">See Cart</button>
+    <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
+
+    <p id='demo'></p>
+    <p id='demo2'>{{ is_admin }}</p>
+
+    <p id='info1'> </p>
+    <p id='info2'>Total tickets bought</p>
+
+    <div class="container" id='cards' v-if="show">
       <div class="row">
         <div class="col-lg-4 col-md-6 mb-4" v-for="(event) in events" :key="event.id">
           <br>
@@ -43,45 +54,40 @@
       </div>
     </div>
 
-    <p id='demo'></p>
-    <p id='demo2'>{{ is_admin }}</p>
-
-    <p id='info1'> </p>
-    <p id='info2'>Total tickets bought</p>
-
-    <div class="container" id="cart" disabled>
-          <table class="table">
-            <thead>
-                <tr>
-                  <th>Event Name</th>
-                  <th>Quantity</th>
-                  <th>Price(€)</th>
-                  <th>Total</th>
-                  <th></th>
-                </tr>
-            </thead>
-            <tbody>
-              <div v-for="(event) in events_added" :key="event.id">
+    <div v-else>
+      <div class="container" id="cart" v-if="logged && is_admin==0">
+            <table class="table">
+              <thead>
                   <tr>
-                    <td data-th="Event Name">{{ event.name }}</td>
-                    <td data-th="Quantity"> {{ event.quantity }}
-                      <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)"> + </button>
-                      <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)" disabled> - </button>
-                    </td>
-                    <td data-th="Price(€)">{{ event.price }}</td>
-                    <td data-th="Total">{{ event.quantity }}</td>
-                    <td class="actions" data-th=""><button class="btn btn-danger btn-sm">Delete</button></td>
+                    <th>Event Name</th>
+                    <th>Quantity</th>
+                    <th>Price(€)</th>
+                    <th>Total</th>
+                    <th></th>
                   </tr>
-                </div>
-             </tbody>
-             <tfoot>
-                <tr>
-                    <td><button id="continue" class="btn btn-success btn-lg" @click="showEventsCards">Continue shopping</button></td>
-                    <td><button id="finish" class="btn btn-success btn-block" @click="finalizePurchase">Finish Purchase</button></td>
-                </tr>
-             </tfoot>
-          </table>
-
+              </thead>
+              <tbody>
+                <div v-for="(event) in events_added" :key="event.id">
+                    <tr>
+                      <td data-th="Event Name">{{ event.name }}</td>
+                      <td data-th="Quantity"> {{ event.quantity }}
+                        <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)"> + </button>
+                        <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)" disabled> - </button>
+                      </td>
+                      <td data-th="Price(€)">{{ event.price }}</td>
+                      <td data-th="Total">{{ event.quantity }}</td>
+                      <td class="actions" data-th=""><button class="btn btn-danger btn-sm">Delete</button></td>
+                    </tr>
+                  </div>
+               </tbody>
+               <tfoot>
+                  <tr>
+                      <td><button id="continue" class="btn btn-success btn-lg" @click="updateShow">Continue shopping</button></td>
+                      <td><button id="finish" class="btn btn-success btn-block" @click="finalizePurchase">Finish Purchase</button></td>
+                  </tr>
+               </tfoot>
+            </table>
+      </div>
     </div>
 
     <div id="addArtistToEvent" class="container">
@@ -167,8 +173,8 @@ export default {
       events_added: [],
       i: 0,
       events: [],
-      show: true,
       total_tickets_bought: 0,
+      show: true,
       addArtistForm: {
         id: '',
         name: '',
@@ -222,13 +228,8 @@ export default {
           console.error(error)
         })
     },
-    showEventsCart () {
-      document.getElementById('cart').style.display = 'block'
-      document.getElementById('cards').style.display = 'none'
-    },
-    showEventsCards () {
-      document.getElementById('cart').style.display = 'none'
-      document.getElementById('cards').style.display = 'block'
+    updateShow () {
+      this.show = !this.show
     },
     addPurchase (parameters) {
       const path = 'https://grupa7test-eventright.herokuapp.com/order/' + this.username
@@ -237,6 +238,7 @@ export default {
       })
         .then(() => {
           console.log('Order done')
+          alert('Order done')
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -256,12 +258,9 @@ export default {
     },
     getUser () {
       const path1 = 'https://grupa7test-eventright.herokuapp.com/account/' + this.username
-      axios.get(path1, {
-        auth: {username: this.token}
-      })
+      axios.get(path1)
         .then((res) => {
-          this.user = res.data.user
-          document.getElementById('info1').innerHTML = 'Money available: ' + res.data.user.available_money
+          this.money = res.data.available_money
         })
         .catch((error) => {
           console.error(error)
@@ -273,7 +272,8 @@ export default {
         auth: {username: this.token}
       })
         .then((res) => {
-          this.orders = res.data.all_orders
+          this.orders = res.data.orders
+          document.getElementById('demo').innerHTML = this.orders
         })
         .catch((error) => {
           console.error(error)
@@ -282,7 +282,7 @@ export default {
       for (let i = 0; i < this.orders.length; i += 1) {
         this.total_tickets_bought += this.orders[i].tickets_bought
       }
-      document.getElementById('info2').innerHTML = 'Total tickets bought: ' + this.total_tickets_bought
+      document.getElementById('info2').innerHTML = this.total_tickets_bought
     },
     getInfo () {
       this.getUser()
@@ -405,8 +405,6 @@ export default {
     this.is_admin = this.$route.query.is_admin
     this.token = this.$route.query.token
     this.getEvents()
-    document.getElementById('cart').style.display = 'none'
-    document.getElementById('cards').style.display = 'block'
   }
 }
 </script>

@@ -369,29 +369,25 @@ class Accounts(Resource):
             except:
                 return {"message": "Database error"}, 500
 
-    @auth.login_required(role='user')
     def delete(self, username):
-        if username == g.user.username:
-            user = AccountsModel.find_by_username(username)
-            if user:
-                user.delete_from_db()
+        user = AccountsModel.find_by_username(username)
+        if user:
+            user.delete_from_db()
+            try:
+                user.save_to_db()
+            except:
+                return {'message': "DataBase Error"}, 500
+            user_order = OrdersModel.find_by_username(username)
+            for usr in user_order:
+                usr.delete_from_db()
                 try:
-                    user.save_to_db()
+                    usr.save_to_db()
                 except:
-                    return {'message': "DataBase Error"}, 500
-                user_order = OrdersModel.find_by_username(username)
-                for usr in user_order:
-                    usr.delete_from_db()
-                    try:
-                        usr.save_to_db()
-                    except:
-                        return {'message': "Database Error"}, 500
+                    return {'message': "Database Error"}, 500
 
-                return {'message': "User with username [{}] removed".format(username)}, 200
-            else:
-                return {'message': "User with username [{}] Not found".format(username)}, 404
+            return {'message': "User with username [{}] removed".format(username)}, 200
         else:
-            return {'message': "User match not found"}, 400
+            return {'message': "User with username [{}] Not found".format(username)}, 404
 
 class AccountsList(Resource):
     def get(self):
