@@ -372,18 +372,18 @@ class Accounts(Resource):
     def delete(self, username):
         user = AccountsModel.find_by_username(username)
         if user:
-            user.delete_from_db()
-            try:
-                user.save_to_db()
-            except:
-                return {'message': "DataBase Error"}, 500
             user_order = OrdersModel.find_by_username(username)
             for usr in user_order:
                 usr.delete_from_db()
                 try:
                     usr.save_to_db()
                 except:
-                    return {'message': "Database Error"}, 500
+                    return {'message': "Database Error2"}, 500
+            user.delete_from_db()
+            try:
+                user.save_to_db()
+            except:
+                return {'message': "DataBase Error"}, 500
 
             return {'message': "User with username [{}] removed".format(username)}, 200
         else:
