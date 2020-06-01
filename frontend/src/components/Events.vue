@@ -1,9 +1,8 @@
 <template>
   <div id="app">
     <h1> {{ message }} </h1>
-    <button id="buy" class="btn btn-success btn-lg" @click="getInfo"> Info User </button>
-    <h4> Total tickets bought: {{ total_tickets_bought }} </h4>
-    <h4> Money available: {{ money }} </h4>
+    <h4 v-if="logged && is_admin==0"> Total tickets bought: {{ total_tickets_bought }} </h4>
+    <h4 v-if="logged && is_admin==0"> Money available: {{ money }} </h4>
 
     <div v-if="logged">
       <button id="logout" class="btn btn-danger btn-lg" @click="login"> Logout </button>
@@ -19,12 +18,6 @@
     <button id="updateArtist" class="btn btn-success btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
 
     <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
-
-    <p id='demo'></p>
-    <p id='demo2'>{{ is_admin }}</p>
-
-    <p id='info1'> </p>
-    <p id='info2'>Total tickets bought</p>
 
     <div class="container" id='cards' v-if="show">
       <div class="row">
@@ -45,8 +38,8 @@
               <h5>{{ event.total_available_tickets }} </h5>
 
               <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)" v-if="logged && is_admin==0"> Add Event </button>
-              <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)" v-if="logged && is_admin==1"> Add Artist to Event </button>
-              <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event)" v-if="logged && is_admin==1"> Delete Artist in Event </button>
+              <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event, 0)" v-if="logged && is_admin==1"> Add Artist to Event </button>
+              <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event, 1)" v-if="logged && is_admin==1"> Delete Artist in Event </button>
               <button id="deleteEvent" class="btn btn-success btn-lg" @click="removeEvent(event.id)" v-if="logged && is_admin==1"> Delete Event </button>
             </div>
             </div>
@@ -71,12 +64,12 @@
                     <tr>
                       <td data-th="Event Name">{{ event.name }}</td>
                       <td data-th="Quantity"> {{ event.quantity }}
+                        <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)"> - </button>
                         <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)"> + </button>
-                        <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)" disabled> - </button>
                       </td>
                       <td data-th="Price(€)">{{ event.price }}</td>
-                      <td data-th="Total">{{ event.quantity }}</td>
-                      <td class="actions" data-th=""><button class="btn btn-danger btn-sm">Delete</button></td>
+                      <td data-th="Total">{{ event.quantity * event.price }}</td>
+                      <td class="actions" data-th=""><button class="btn btn-danger btn-sm" @click="deleteOrder">Delete</button></td>
                     </tr>
                   </div>
                </tbody>
@@ -90,7 +83,7 @@
       </div>
     </div>
 
-    <div id="addArtistToEvent" class="container">
+    <div id="addArtistToEvent" class="container" v-if="showAddArtist">
       <b-form @submit="onSubmitAddArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="addArtistModal">
 
         <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
@@ -122,11 +115,12 @@
 
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
+        <b-button id="back1" class="btn btn-secondary" @click="getBack">Back</b-button>
       </b-form>
 
     </div>
 
-    <div id="deleteArtistToEvent" class="container">
+    <div id="deleteArtistToEvent" class="container" v-if="showDeleteArtist">
       <b-form @submit="onSubmitDeleteArtistInEvent" @reset="onResetAddArtistInEvent" v-if="show" ref="deleteArtistModal">
         <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
           <b-form-input
@@ -139,6 +133,7 @@
 
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
+        <b-button id="back2" class="btn btn-secondary" @click="getBack">Back</b-button>
       </b-form>
     </div>
 
@@ -166,15 +161,17 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      message: 'My first component',
+      message: 'Tickets',
       tickets_bought: 0,
-      money: 200,
+      money: 0,
       price: 10,
       events_added: [],
       i: 0,
       events: [],
       total_tickets_bought: 0,
       show: true,
+      showAddArtist: false,
+      showDeleteArtist: false,
       addArtistForm: {
         id: '',
         name: '',
@@ -194,25 +191,30 @@ export default {
       this.addArtistForm.genre = ''
       this.deleteArtistForm.name = ''
     },
-    buyTickets (event) {
-      const index = this.events_added.indexOf(event)
+    buyTickets (eventAdd) {
+      const index = this.events_added.indexOf(eventAdd)
       this.events_added[index].quantity += 1
-      document.getElementById('demo').innerHTML = event.quantity
-      if (this.events_added[index].quantity > event.total_available_tickets) {
+      if (this.events_added[index].quantity > eventAdd.total_available_tickets) {
         document.getElementById('buy').disabled = true
       }
-      document.getElementById('return').disabled = false
+      this.show = true
+      this.$nextTick(() => {
+        this.show = false
+      })
     },
-    returnTickets (event) {
-      const index = this.events_added.indexOf(event)
-      this.events_added.items[index].quantity -= 1
-      if (this.events_added.items[index].quantity === 0) {
+    returnTickets (eventReturn) {
+      const index = this.events_added.indexOf(eventReturn)
+      this.events_added[index].quantity -= 1
+      if (this.events_added[index].quantity === 0) {
         this.events_added.splice(index, 1)
       }
       document.getElementById('buy').disabled = false
+      this.show = true
+      this.$nextTick(() => {
+        this.show = false
+      })
     },
     addEvent (event) {
-      document.getElementById('demo').innerHTML = event.id
       if (this.events_added.indexOf(event) === -1) {
         event['quantity'] = 1
         this.events_added.push(event)
@@ -222,6 +224,7 @@ export default {
       const path = 'https://grupa7test-eventright.herokuapp.com/events'
       axios.get(path)
         .then((res) => {
+          this.events = []
           this.events = res.data.events
         })
         .catch((error) => {
@@ -254,7 +257,10 @@ export default {
         }
         this.addPurchase(parameters)
       }
+      this.events_added = []
       this.getEvents()
+      this.getUser()
+      this.getOrders()
     },
     getUser () {
       const path1 = 'https://grupa7test-eventright.herokuapp.com/account/' + this.username
@@ -273,16 +279,14 @@ export default {
       })
         .then((res) => {
           this.orders = res.data.orders
-          document.getElementById('demo').innerHTML = this.orders
+          this.total_tickets_bought = 0
+          for (let i = 0; i < res.data.orders.length; i += 1) {
+            this.total_tickets_bought += res.data.orders[i].tickets_bought
+          }
         })
         .catch((error) => {
           console.error(error)
         })
-      this.total_tickets_bought = 0
-      for (let i = 0; i < this.orders.length; i += 1) {
-        this.total_tickets_bought += this.orders[i].tickets_bought
-      }
-      document.getElementById('info2').innerHTML = this.total_tickets_bought
     },
     getInfo () {
       this.getUser()
@@ -303,8 +307,13 @@ export default {
     updateArtist () {
       this.$router.replace({ path: '/updateArtist', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
     },
-    eventWhereModifyArtist (event) {
+    eventWhereModifyArtist (event, n) {
       this.event_to_modify = event
+      if (n === 0) {
+        this.showAddArtist = true
+      } else {
+        this.showDeleteArtist = true
+      }
     },
     onSubmitAddArtistInEvent (evt) {
       evt.preventDefault()
@@ -316,6 +325,8 @@ export default {
       this.addNewArtist(parameters)
       this.addArtistInEvent(parameters)
       this.initForm()
+      this.showAddArtist = false
+      this.getEvents()
     },
     addNewArtist (parameters) {
       const path = 'https://grupa7test-eventright.herokuapp.com/artist'
@@ -334,7 +345,6 @@ export default {
     },
     addArtistInEvent (parameters) {
       const path = 'https://grupa7test-eventright.herokuapp.com/event/' + this.event_to_modify.id + '/artist'
-      document.getElementById('demo2').innerHTML = path
       axios.post(path, parameters, {
         auth: {username: this.token}
       })
@@ -362,6 +372,8 @@ export default {
       evt.preventDefault()
       this.deleteArtistInEvent()
       this.initForm()
+      this.showDeleteArtist = false
+      this.getEvents()
     },
     deleteArtistInEvent () {
       for (let i = 0; i < this.event_to_modify.artists.length; i += 1) {
@@ -397,6 +409,14 @@ export default {
           alert('No Event with this name')
           this.onReset()
         })
+    },
+    getBack () {
+      this.initForm()
+      this.showAddArtist = false
+      this.showDeleteArtist = false
+    },
+    deleteOrder (eventDelete) {
+      this.events_added.splice(this.events_added.indexOf(eventDelete), 1)
     }
   },
   created () {
@@ -405,6 +425,8 @@ export default {
     this.is_admin = this.$route.query.is_admin
     this.token = this.$route.query.token
     this.getEvents()
+    this.getUser()
+    this.getOrders()
   }
 }
 </script>
