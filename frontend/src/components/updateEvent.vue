@@ -76,6 +76,7 @@
 
       <b-button type="submit" variant="primary">Submit</b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
+      <b-button id="back" class="btn btn-secondary" @click="backToEvents">Back</b-button>
     </b-form>
 
   </div>
@@ -147,6 +148,9 @@ export default {
           alert('Event already exists')
           this.onReset()
         })
+    },
+    backToEvents () {
+      this.$router.replace({ path: '/', query: { username: this.username, logged: this.logged, is_admin: this.is_admin, token: this.token } })
     }
   },
   created () {

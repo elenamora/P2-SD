@@ -37,7 +37,7 @@
               <h6>{{ event.price }} €</h6>
               <h5>{{ event.total_available_tickets }} </h5>
 
-              <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)" v-if="logged && is_admin==0"> Add Event </button>
+              <button id="add" class="btn btn-success btn-lg" @click="addEvent(event)" v-if="logged && is_admin==0 && event.total_available_tickets > 0"> Add Event </button>
               <button id="addArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event, 0)" v-if="logged && is_admin==1"> Add Artist to Event </button>
               <button id="deleteArtist" class="btn btn-success btn-lg" @click="eventWhereModifyArtist(event, 1)" v-if="logged && is_admin==1"> Delete Artist in Event </button>
               <button id="deleteEvent" class="btn btn-success btn-lg" @click="removeEvent(event.id)" v-if="logged && is_admin==1"> Delete Event </button>
@@ -65,7 +65,7 @@
                       <td data-th="Event Name">{{ event.name }}</td>
                       <td data-th="Quantity"> {{ event.quantity }}
                         <button id="return" class="btn btn-success btn-lg" @click="returnTickets(event)"> - </button>
-                        <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)"> + </button>
+                        <button id="buy" class="btn btn-success btn-lg" @click="buyTickets(event)" :disabled="itemIsDisabled(event)"> + </button>
                       </td>
                       <td data-th="Price(€)">{{ event.price }}</td>
                       <td data-th="Total">{{ event.quantity * event.price }}</td>
@@ -194,9 +194,6 @@ export default {
     buyTickets (eventAdd) {
       const index = this.events_added.indexOf(eventAdd)
       this.events_added[index].quantity += 1
-      if (this.events_added[index].quantity > eventAdd.total_available_tickets) {
-        document.getElementById('buy').disabled = true
-      }
       this.show = true
       this.$nextTick(() => {
         this.show = false
@@ -208,7 +205,6 @@ export default {
       if (this.events_added[index].quantity === 0) {
         this.events_added.splice(index, 1)
       }
-      document.getElementById('buy').disabled = false
       this.show = true
       this.$nextTick(() => {
         this.show = false
@@ -417,6 +413,13 @@ export default {
     },
     deleteOrder (eventDelete) {
       this.events_added.splice(this.events_added.indexOf(eventDelete), 1)
+    },
+    itemIsDisabled (eventDis) {
+      if (eventDis.total_available_tickets === eventDis.quantity) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   created () {
