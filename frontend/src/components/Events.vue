@@ -24,19 +24,19 @@
 
     <div>
 
-    <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
-        <button id="update" class="btn btn-primary btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
+      <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
+          <button id="update" class="btn btn-primary btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
 
-        <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist" v-if="logged && is_admin==1"> Add Artist </button>
-        <button id="updateArtist" class="btn btn-primary btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
+          <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist" v-if="logged && is_admin==1"> Add Artist </button>
+          <button id="updateArtist" class="btn btn-primary btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
 
-        <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
+          <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
+        </div>
       </div>
-    </div>
-    </div>
+      </div>
 
       <div class="mt-5" id='cards' v-if="show">
         <section class="parallax">
@@ -48,8 +48,13 @@
                   <div class="flip-card">
                     <div class="flip-card-inner">
                       <div class="flip-card-front">
-                        <img class="card-img-top" src="../assets/logo.png" alt="Event">
-                        <h1 class="card-title">{{ event.name }}</h1>
+                        <img class="card-img-top" :src="require('../assets/image' + event.id + '.jpg')" alt="Event">
+                        <h1 class="card-title pt-5" style="font-size: 300%">{{ event.name }}</h1>
+                        <br>
+                        <h4 class="card-subtitle"><span><strong>Price:</strong></span> {{ event.price }} €</h4>
+                        <br>
+                        <h3 v-if="event.total_available_tickets > 0"><strong> {{ event.total_available_tickets }} </strong></h3>
+                        <img v-if="event.total_available_tickets == 0" src="../assets/sold.png" alt="Sold OUT" style="width:70%;">
                       </div>
                       <div class="card-body flip-card-back">
                         <br>
@@ -58,14 +63,14 @@
                         <div v-for="(artist) in event.artists" :key="artist.id">
                             <h3 class="text-muted">{{ artist.name }}</h3>
                         </div>
-                        <h5>{{ event.country }}</h5>
-                        <h6>{{ event.city }}</h6>
+                        <h6 class="mt-2">{{ event.city }}</h6>
                         <h6>{{ event.place }}</h6>
                         <h5>{{ event.date }}</h5>
-                        <h4 class="card-subtitle"><span><strong>Price:</strong></span> {{ event.price }} €</h4>
-                        <h3><strong> {{ event.total_available_tickets }} </strong></h3>
+                        <h4 class="card-subtitle pt-2"><span><strong>Price:</strong></span> {{ event.price }} €</h4>
+                        <h3 class="pt-2" v-if="event.total_available_tickets > 0"><strong> {{ event.total_available_tickets }} </strong></h3>
                         <br>
                         <b-button id="add" class="btn btn-success btn-lg mt-2 w-100" @click="addEvent(event)" v-if="logged && is_admin==0 && event.total_available_tickets > 0"> Add Event </b-button>
+                        <img v-if="logged && is_admin==0 && event.total_available_tickets == 0" src="../assets/sold.png" alt="Sold OUT" style="width:70%;">
                         <b-button id="addArtist" class="btn btn-success btn-lg mt-2 w-100" @click="eventWhereModifyArtist(event, 0)" v-if="logged && is_admin==1"> Add Artist to Event </b-button>
                         <b-button id="deleteArtist" class="btn btn-danger btn-lg mt-2 w-100" @click="eventWhereModifyArtist(event, 1)" v-if="logged && is_admin==1"> Delete Artist in Event </b-button>
                         <b-button id="deleteEvent" class="btn btn-danger btn-lg mt-2 w-100" @click="removeEvent(event.id)" v-if="logged && is_admin==1"> Delete Event </b-button>
@@ -180,7 +185,7 @@
 .flip-card {
   background-color: transparent;
   width: 300px;
-  height: 550px;
+  height: 620px;
   perspective: 1000px;
 }
 .flip-card-inner {
@@ -211,9 +216,14 @@
   color: black;
   transform: rotateY(180deg);
 }
-
 .parallax {
    background: url('../assets/concert2.jpg') repeat fixed 100%;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 20vw;
+    object-fit: cover;
 }
 </style>
 
