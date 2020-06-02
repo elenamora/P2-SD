@@ -1,39 +1,44 @@
 <template>
-  <div>
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+  <div class="container mt-5 mb-5">
+    <div class="row">
+      <div class="col-12">
+        <h1 style="text-align:center">CREATE NEW ARTIST</h1>
+        <hr class="mb-5">
+        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
 
-      <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
-        <b-form-input
-          id="input-1"
-          v-model="addArtistForm.name"
-          required
-          placeholder="Enter Artist Name"
-        ></b-form-input>
-      </b-form-group>
+          <b-form-group id="input-group-1" label="Artist Name:" label-for="input-1">
+            <b-form-input
+              id="input-1"
+              v-model="addArtistForm.name"
+              required
+              placeholder="Enter Artist Name"
+            ></b-form-input>
+          </b-form-group>
 
-      <b-form-group id="input-group-2" label="Country Artist:" label-for="input-2">
-        <b-form-input
-          id="input-2"
-          v-model="addArtistForm.country"
-          required
-          placeholder="Enter country"
-        ></b-form-input>
-      </b-form-group>
+          <b-form-group id="input-group-2" label="Country Artist:" label-for="input-2">
+            <b-form-input
+              id="input-2"
+              v-model="addArtistForm.country"
+              required
+              placeholder="Enter country"
+            ></b-form-input>
+          </b-form-group>
 
-      <b-form-group id="input-group-3" label="Genre Artist:" label-for="input-3">
-        <b-form-input
-          id="input-3"
-          v-model="addArtistForm.genre"
-          required
-          placeholder="Enter genre"
-        ></b-form-input>
-      </b-form-group>
+          <b-form-group id="input-group-3" label="Genre Artist:" label-for="input-3">
+            <b-form-input
+              id="input-3"
+              v-model="addArtistForm.genre"
+              required
+              placeholder="Enter genre"
+            ></b-form-input>
+          </b-form-group>
 
-      <b-button type="submit" variant="primary">Submit</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
-      <b-button id="back" class="btn btn-secondary" @click="backToEvents">Back</b-button>
-    </b-form>
-
+          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="reset" variant="danger">Reset</b-button>
+          <b-button id="back" class="btn btn-secondary" @click="backToEvents">Back</b-button>
+        </b-form>
+      </div>
+    </div>
   </div>
 </template>
 
