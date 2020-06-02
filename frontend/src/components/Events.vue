@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-if="showGlobal">
     <div class="row mt-3 mb-3">
       <div class="col-9">
         <h1> {{ message }} </h1>
@@ -49,12 +49,14 @@
                     <div class="flip-card-inner">
                       <div class="flip-card-front">
                         <img class="card-img-top" :src="require('../assets/image' + event.id + '.jpg')" alt="Event">
-                        <h1 class="card-title pt-5" style="font-size: 300%">{{ event.name }}</h1>
-                        <br>
-                        <h4 class="card-subtitle"><span><strong>Price:</strong></span> {{ event.price }} €</h4>
-                        <br>
-                        <h3 v-if="event.total_available_tickets > 0"><strong> {{ event.total_available_tickets }} </strong></h3>
-                        <img v-if="event.total_available_tickets == 0" src="../assets/sold.png" alt="Sold OUT" style="width:70%;">
+                        <div class="card-body">
+                          <h1 class="card-title pt-5" style="font-size: 300%">{{ event.name }}</h1>
+                          <br>
+                          <h4 class="card-subtitle"><span><strong>Price:</strong></span> {{ event.price }} €</h4>
+                          <br>
+                          <h3 v-if="event.total_available_tickets > 0"><strong> {{ event.total_available_tickets }} </strong></h3>
+                          <img v-if="event.total_available_tickets == 0" src="../assets/sold.png" alt="Sold OUT" style="width:70%;">
+                        </div>
                       </div>
                       <div class="card-body flip-card-back">
                         <br>
@@ -243,6 +245,7 @@ export default {
       show: true,
       showAddArtist: false,
       showDeleteArtist: false,
+      showGlobal: true,
       addArtistForm: {
         id: '',
         name: '',
@@ -301,6 +304,35 @@ export default {
     updateShow () {
       this.show = !this.show
     },
+    getUser () {
+      const path1 = 'https://grupa7test-eventright.herokuapp.com/account/' + this.username
+      axios.get(path1)
+        .then((res) => {
+          this.money = res.data.available_money
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    getOrders () {
+      const path = 'https://grupa7test-eventright.herokuapp.com/order/' + this.username
+      axios.get(path, {
+        auth: {username: this.token}
+      })
+        .then((res) => {
+          this.total_tickets_bought = 0
+          for (let i = 0; i < res.data.orders.length; i += 1) {
+            this.total_tickets_bought += res.data.orders[i].tickets_bought
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    getInfo () {
+      this.getUser()
+      this.getOrders()
+    },
     addPurchase (parameters) {
       const path = 'https://grupa7test-eventright.herokuapp.com/order/' + this.username
       axios.post(path, parameters, {
@@ -328,36 +360,7 @@ export default {
       this.getEvents()
       this.getUser()
       this.getOrders()
-    },
-    getUser () {
-      const path1 = 'https://grupa7test-eventright.herokuapp.com/account/' + this.username
-      axios.get(path1)
-        .then((res) => {
-          this.money = res.data.available_money
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    },
-    getOrders () {
-      const path = 'https://grupa7test-eventright.herokuapp.com/order/' + this.username
-      axios.get(path, {
-        auth: {username: this.token}
-      })
-        .then((res) => {
-          this.orders = res.data.orders
-          this.total_tickets_bought = 0
-          for (let i = 0; i < res.data.orders.length; i += 1) {
-            this.total_tickets_bought += res.data.orders[i].tickets_bought
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    },
-    getInfo () {
-      this.getUser()
-      this.getOrders()
+      this.show = true
     },
     login () {
       this.$router.replace({ path: '/userlogin' })
@@ -381,19 +384,6 @@ export default {
       } else {
         this.showDeleteArtist = true
       }
-    },
-    onSubmitAddArtistInEvent (evt) {
-      evt.preventDefault()
-      const parameters = {
-        name: this.addArtistForm.name,
-        country: this.addArtistForm.country,
-        genre: this.addArtistForm.genre
-      }
-      this.addNewArtist(parameters)
-      this.addArtistInEvent(parameters)
-      this.initForm()
-      this.showAddArtist = false
-      this.getEvents()
     },
     addNewArtist (parameters) {
       const path = 'https://grupa7test-eventright.herokuapp.com/artist'
@@ -425,6 +415,19 @@ export default {
           this.onReset()
         })
     },
+    onSubmitAddArtistInEvent (evt) {
+      evt.preventDefault()
+      const parameters = {
+        name: this.addArtistForm.name,
+        country: this.addArtistForm.country,
+        genre: this.addArtistForm.genre
+      }
+      this.addNewArtist(parameters)
+      this.addArtistInEvent(parameters)
+      this.initForm()
+      this.showAddArtist = false
+      this.getEvents()
+    },
     onResetAddArtistInEvent (evt) {
       evt.preventDefault()
       // Reset our form values
@@ -434,13 +437,6 @@ export default {
       this.$nextTick(() => {
         this.show = true
       })
-    },
-    onSubmitDeleteArtistInEvent (evt) {
-      evt.preventDefault()
-      this.deleteArtistInEvent()
-      this.initForm()
-      this.showDeleteArtist = false
-      this.getEvents()
     },
     deleteArtistInEvent () {
       for (let i = 0; i < this.event_to_modify.artists.length; i += 1) {
@@ -453,7 +449,7 @@ export default {
         auth: {username: this.token}
       })
         .then(() => {
-          console.log('Artist Deleted to Event')
+          console.log('Artist Deleted from Event')
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -461,6 +457,13 @@ export default {
           alert('No Artist with this name')
           this.onReset()
         })
+    },
+    onSubmitDeleteArtistInEvent (evt) {
+      evt.preventDefault()
+      this.deleteArtistInEvent()
+      this.initForm()
+      this.showDeleteArtist = false
+      this.getEvents()
     },
     removeEvent (id) {
       const path = 'https://grupa7test-eventright.herokuapp.com/event/' + id
@@ -474,7 +477,6 @@ export default {
           // eslint-disable-next-line
           console.log(error)
           alert('No Event with this name')
-          this.onReset()
         })
     },
     getBack () {
