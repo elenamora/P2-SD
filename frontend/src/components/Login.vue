@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" style="background-color: #E0E0E0">
     <div class="col-8">
       <img src="../assets/concert.jpg" alt="Concert" style="width: 100%;height:100vh">
     </div>

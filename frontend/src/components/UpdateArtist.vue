@@ -67,6 +67,7 @@ export default {
   },
   methods: {
     initForm () {
+      this.updateArtistForm.artist_id = ''
       this.updateArtistForm.name = ''
       this.updateArtistForm.country = ''
       this.updateArtistForm.genre = ''
@@ -103,7 +104,6 @@ export default {
         .catch((error) => {
           // eslint-disable-next-line
           console.log(error)
-          alert('Artist already exists')
           this.onReset()
         })
     },

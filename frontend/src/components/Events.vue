@@ -1,11 +1,43 @@
 <template>
   <div id="app" v-if="showGlobal">
-    <div class="row mt-3 mb-3">
-      <div class="col-9">
-        <h1> {{ message }} </h1>
+
+    <nav class="navbar navbar-expand-lg navbar-light justify-content-between" style="height:100px;background-color:#6F6F6F">
+      <div class="navbar-brand">
+        <h1 style="color:white"> {{ message }} </h1>
       </div>
-      <div class="col-3" style="text-align:left;">
-        <div class="row mb-2">
+
+      <div class="nav navbar-nav">
+
+        <div class="nav-item mr-sm-5">
+          <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
+        </div>
+
+        <div class="nav-item mr-sm-5">
+          <button id="update" class="btn btn-primary btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
+        </div>
+
+        <div class="nav-item mr-sm-5">
+          <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist" v-if="logged && is_admin==1"> Add Artist </button>
+        </div>
+
+        <div class="nav-item mr-sm-5">
+          <button id="updateArtist" class="btn btn-primary btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
+        </div>
+
+        <div class="nav-item mr-sm-5">
+          <div class="row">
+            <h4 v-if="logged && is_admin==0" style="color:white;"> Total tickets bought: {{ total_tickets_bought }} </h4>
+          </div>
+          <div class="row">
+            <h4 v-if="logged && is_admin==0" style="color:white;"> Money available: {{ money }} </h4>
+          </div>
+        </div>
+
+        <div class="nav-item mr-sm-5">
+          <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
+        </div>
+
+        <div class="nav-item my-2 my-sm-0">
           <div v-if="logged">
             <button id="logout" class="btn btn-danger btn-lg" @click="login"> Logout </button>
           </div>
@@ -13,32 +45,13 @@
             <button id="login" class="btn btn-success btn-lg" @click="login"> Login </button>
           </div>
         </div>
-        <div class="row">
-          <h4 v-if="logged && is_admin==0"> Total tickets bought: {{ total_tickets_bought }} </h4>
-        </div>
-        <div class="row">
-          <h4 v-if="logged && is_admin==0"> Money available: {{ money }} </h4>
-        </div>
+
       </div>
-    </div>
+    </nav>
 
     <div>
 
-      <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <button id="create" class="btn btn-success btn-lg" @click="create" v-if="logged && is_admin==1"> Create new Event </button>
-          <button id="update" class="btn btn-primary btn-lg" @click="update" v-if="logged && is_admin==1"> Update Event </button>
-
-          <button id="createArtist" class="btn btn-success btn-lg" @click="createArtist" v-if="logged && is_admin==1"> Add Artist </button>
-          <button id="updateArtist" class="btn btn-primary btn-lg" @click="updateArtist" v-if="logged && is_admin==1"> Update Artist </button>
-
-          <button id="events_cart" class="btn btn-success btn-lg" @click="updateShow" v-if="logged && is_admin==0 && show">See Cart</button>
-        </div>
-      </div>
-      </div>
-
-      <div class="mt-5" id='cards' v-if="show">
+      <div id='cards' v-if="show">
         <section class="parallax">
           <div class="parallax-inner" style="padding-top: 5%;padding-bottom: 5%;">
             <div class="container">
@@ -114,7 +127,7 @@
                  <tfoot>
                     <tr>
                         <td><button id="continue" class="btn btn-success btn-lg" @click="updateShow">Continue shopping</button></td>
-                        <td><button id="finish" class="btn btn-success btn-block" @click="finalizePurchase">Finish Purchase</button></td>
+                        <td><button id="finish" class="btn btn-success btn-lg" @click="finalizePurchase" align="right">Finish Purchase</button></td>
                     </tr>
                  </tfoot>
               </table>
@@ -210,11 +223,11 @@
   backface-visibility: hidden;
 }
 .flip-card-front {
-  background-color: white;
+  background-color: #E0E0E0;
   color: black;
 }
 .flip-card-back {
-  background-color: white;
+  background-color: #E0E0E0;
   color: black;
   transform: rotateY(180deg);
 }
