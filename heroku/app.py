@@ -143,7 +143,6 @@ class Event(Resource):
 
     @auth.login_required(role='admin')
     def put(self,id):
-
         event = EventModel.find_by_id(id)
 
         parser = reqparse.RequestParser()
@@ -181,7 +180,7 @@ class Event(Resource):
 
     def get(self, id):
         event = EventModel.find_by_id(id)
-        return event.json(), 200 if event else {'message': "Event with id [{}] Not found".format(id)}, 404
+        return event.json(), 200
 
 class EventList(Resource):
     def get(self):

@@ -31,7 +31,7 @@ class EventModel(db.Model):
         for artist in self.artists_table:
             artists_list.append(artist.json())
 
-        dictionary = {'id': self.id, 'name' : self.name, 'place': self.place, 'city': self.city, 'date': self.date,
+        dictionary = {'id': self.id, 'name': self.name, 'place': self.place, 'city': self.city, 'date': self.date,
                         'artists': artists_list,
                         'price': self.price, 'total_available_tickets': self.total_available_tickets}
         return dictionary
